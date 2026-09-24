@@ -1,0 +1,57 @@
+# Publishes the static site in docs/ to GitHub Pages.
+#
+# The site is hand-written HTML and CSS, so there is nothing to build: the
+# folder is uploaded as-is. Deploying through Actions rather than the classic
+# "deploy from a branch" source keeps the publishing rule versioned in the
+# repository, and stops the site from depending on the folder being named
+# docs/ at the repository root.
+#
+# One manual step is still required, once: Settings -> Pages -> Source ->
+# GitHub Actions. The `enablement` input of configure-pages cannot do it for
+# us, because it needs a token with admin rights and this workflow runs with
+# the default GITHUB_TOKEN.
+
+name: Deploy project site
+
+on:
+  push:
+    branches: [main]
+    # Only redeploy when the site or this workflow actually changes.
+    paths:
+      - "docs/**"
+      - ".github/workflows/pages.yml"
+  # Lets you redeploy by hand without touching a file.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never cancel a deploy that is already running: a half-finished publish
+# would leave the live site in whatever state it got to.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload docs/ as the site artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v5

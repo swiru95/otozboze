@@ -82,14 +82,28 @@ Podgląd lokalny bez budowania czegokolwiek:
 python3 -m http.server 4321 --directory docs
 ```
 
-Żeby opublikować witrynę, repozytorium musi najpierw trafić na GitHuba — dziś
-nie ma skonfigurowanego zdalnego repozytorium. Po wypchnięciu wejdź w
-**Settings → Pages**, wybierz źródło **Deploy from a branch**, gałąź `main`
-i katalog `/docs`. Strona pojawi się pod adresem
-`https://<użytkownik>.github.io/otozboze/`.
+### Publikacja
 
-Plik `docs/.nojekyll` wyłącza przetwarzanie przez Jekyll, więc pliki są
-serwowane dokładnie takie, jakie są w repozytorium.
+Witrynę publikuje workflow `.github/workflows/pages.yml`. Katalog `docs/` jest
+wysyłany bez żadnego budowania, bo to zwykły HTML i CSS.
+
+Jednorazowo trzeba przestawić źródło w ustawieniach repozytorium:
+**Settings → Pages → Source → GitHub Actions**. Workflow nie zrobi tego za
+Ciebie, bo parametr `enablement` akcji `configure-pages` wymaga tokenu z
+prawami administratora, a workflow działa na domyślnym `GITHUB_TOKEN`.
+
+Po scaleniu do `main` deploy rusza sam. Uruchamia się tylko wtedy, gdy zmieni
+się `docs/` albo sam workflow; poza tym możesz go odpalić ręcznie przyciskiem
+**Run workflow** w zakładce Actions. Strona pojawi się pod adresem
+`https://swiru95.github.io/otozboze/`.
+
+Publikacja przez Actions, a nie przez „deploy from a branch”, trzyma regułę
+publikowania w repozytorium i nie uzależnia witryny od tego, że katalog
+nazywa się akurat `docs/` i leży w korzeniu.
+
+Plik `docs/.nojekyll` zostaje na wszelki wypadek. Przy publikacji z Actions
+Jekyll i tak się nie uruchamia, ale gdyby ktoś kiedyś przełączył źródło z
+powrotem na gałąź, oszczędzi to trudnej do namierzenia awarii.
 
 Zmiana tokenu w `src/app/globals.css` musi trafić także do `docs/styl.css`.
 Obie palety są celowo tą samą paletą — jeśli się rozjadą, produkt i materiały
