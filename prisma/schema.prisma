@@ -1,0 +1,605 @@
+// otozboze.pl — B2B grain trading & freight platform
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+/// Platform roles. A user holds exactly one role; ADMIN sees everything.
+enum UserRole {
+  FARMER
+  BUYER
+  TRANSPORT
+  ADMIN
+}
+
+enum GrainType {
+  WHEAT_CONSUMPTION // pszenica konsumpcyjna
+  WHEAT_FEED // pszenica paszowa
+  RYE // żyto
+  BARLEY_MALTING // jęczmień browarny
+  BARLEY_FEED // jęczmień paszowy
+  OATS // owies
+  TRITICALE // pszenżyto
+  MAIZE // kukurydza
+  RAPESEED // rzepak
+  SOYBEAN // soja
+  SUNFLOWER // słonecznik
+  OTHER
+}
+
+enum OfferStatus {
+  DRAFT
+  ACTIVE
+  RESERVED
+  SOLD
+  CANCELLED
+  EXPIRED
+}
+
+enum PurchaseStatus {
+  PENDING
+  CONFIRMED
+  IN_TRANSPORT
+  DELIVERED
+  SETTLED
+  CANCELLED
+}
+
+enum TransportJobStatus {
+  AVAILABLE
+  ASSIGNED
+  IN_TRANSIT
+  DELIVERED
+  CANCELLED
+}
+
+enum VehicleType {
+  TIPPER // wywrotka
+  WALKING_FLOOR // ruchoma podłoga
+  SILO_TANKER // cysterna paszowa
+  CONTAINER
+  OTHER
+}
+
+/// What a document proves. Offer-side and carrier-side kinds share one enum;
+/// a CHECK constraint keeps each kind's row on the right owner.
+enum DocumentKind {
+  LAB_RESULT // wynik badania laboratoryjnego partii
+  ISCC_CERTIFICATE // ISCC EU — zrównoważona biomasa
+  GMP_PLUS // GMP+ — bezpieczeństwo pasz
+  EUDR_STATEMENT // oświadczenie EUDR / Zielony Ład
+  QUALITY_CERTIFICATE // świadectwo jakości, atest
+  TRANSPORT_LICENCE // licencja na transport drogowy
+  CARRIER_INSURANCE // OCP przewoźnika
+  OTHER
+}
+
+/// Which side a document hangs off.
+enum DocumentScope {
+  OFFER
+  CARRIER
+}
+
+/// Mock billing tier for the BUYER side. Real billing would live in the
+/// payment provider; this is only the entitlement the app reads. It is NOT a
+/// capability — `roles` still decides what a user may do at all.
+enum SubscriptionTier {
+  FREE
+  PRO
+}
+
+/// What the platform charged for. One value per revenue stream.
+enum ChargeKind {
+  OFFER_HIGHLIGHT // farmer, one-off, per offer
+  TRANSPORT_COMMISSION // carrier, one-off, per accepted job
+  BUYER_SUBSCRIPTION // buyer, recurring
+}
+
+enum LocationKind {
+  FARM
+  WAREHOUSE
+  ELEVATOR
+  PORT
+  MILL
+  OTHER
+}
+
+// ---------------------------------------------------------------------------
+// Auth.js (NextAuth v5) — Prisma adapter models
+// ---------------------------------------------------------------------------
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+
+  /// Capability flags, not an identity: one account may sell, buy and haul.
+  /// Granted, never assumed — synced from the IdP on each sign-in (Cognito
+  /// `cognito:groups`). Empty means "can browse, can do nothing".
+  /// This is the ONLY authority for access control.
+  roles UserRole[] @default([])
+
+  /// Which entitled role the user is currently acting as — UI/session state
+  /// driving the Role Switcher. Never trusted for authorisation on its own;
+  /// it must always be a member of `roles`.
+  activeRole UserRole?
+
+  /// Buyer-side entitlement, orthogonal to `roles`. A FREE buyer keeps every
+  /// capability it holds and may still trade, but only up to the free-tier
+  /// monthly cap enforced in the purchase action.
+  subscriptionTier  SubscriptionTier @default(FREE)
+  /// Null while FREE; set by the (mock) upgrade.
+  subscribedAt      DateTime?
+  /// Mock renewal date, so the UI can show how long PRO is valid for.
+  subscriptionUntil DateTime?
+
+  /// Brand mark uploaded in-app. Deliberately separate from Auth.js `image`
+  /// above, which the identity provider overwrites on every sign-in. The UI
+  /// falls back logoUrl -> image -> initials.
+  logoUrl String?
+
+  /// Facilities and fleet: trucks for a carrier, silos and hangars for a
+  /// buyer. One field serves both; the UI labels it by active role.
+  /// MOCK STORAGE — downscaled data URLs, same note as `Document`.
+  galleryUrls String[] @default([])
+
+  phone     String?
+  isActive  Boolean @default(true)
+  companyId String?
+
+  company  Company?  @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  accounts Account[]
+  sessions Session[]
+
+  // Domain relations (one per role; unused ones stay empty).
+  offers        GrainOffer[]   @relation("OfferFarmer")
+  purchases     Purchase[]     @relation("PurchaseBuyer")
+  transportJobs TransportJob[] @relation("JobCarrier")
+  auditLogs     AuditLog[]
+
+  reviewsWritten  Review[] @relation("ReviewAuthor")
+  reviewsReceived Review[] @relation("ReviewSubject")
+
+  charges PlatformCharge[]
+
+  /// Licences and certificates this haulier uploaded (GMP+, licencja, OCP).
+  /// Held on the user because `companyId` is optional and capabilities are
+  /// per-user; in reality these belong to the firm.
+  carrierDocuments Document[] @relation("CarrierDocuments")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([roles], type: Gin)
+  @@index([companyId])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ---------------------------------------------------------------------------
+// Organisations & places
+// ---------------------------------------------------------------------------
+
+/// A trading entity — farm, buyer (mill/elevator/trader) or haulier.
+model Company {
+  id         String  @id @default(cuid())
+  name       String
+  nip        String? @unique // Polish tax id
+  regon      String?
+  krs        String?
+  email      String?
+  phone      String?
+  isVerified Boolean @default(false)
+
+  users     User[]
+  locations Location[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+}
+
+/// Pickup / delivery point. Shared by offers, purchases and transport jobs.
+model Location {
+  id          String       @id @default(cuid())
+  kind        LocationKind @default(FARM)
+  label       String?
+  street      String?
+  city        String
+  postalCode  String
+  voivodeship String?
+  countryCode String       @default("PL")
+  latitude    Float?
+  longitude   Float?
+  notes       String?
+
+  companyId String?
+  company   Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
+
+  offersPickup      GrainOffer[]   @relation("OfferPickup")
+  purchasesDelivery Purchase[]     @relation("PurchaseDelivery")
+  jobsPickup        TransportJob[] @relation("JobPickup")
+  jobsDelivery      TransportJob[] @relation("JobDelivery")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([postalCode])
+  @@index([voivodeship])
+  @@index([companyId])
+}
+
+// ---------------------------------------------------------------------------
+// 1. Commodity offer — created by FARMER
+// ---------------------------------------------------------------------------
+
+model GrainOffer {
+  id          String    @id @default(cuid())
+  reference   String    @unique @default(cuid()) // human-facing offer number
+  grainType   GrainType
+  harvestYear Int
+
+  /// Batch size in metric tonnes.
+  tonnage       Decimal @db.Decimal(10, 2)
+  /// Asking price per metric tonne, net.
+  pricePerTonne Decimal @db.Decimal(10, 2)
+  currency      String  @default("PLN")
+
+  status      OfferStatus @default(DRAFT)
+  title       String?
+  description String?     @db.Text
+
+  availableFrom  DateTime?
+  availableUntil DateTime?
+
+  farmerId String
+  farmer   User   @relation("OfferFarmer", fields: [farmerId], references: [id], onDelete: Cascade)
+
+  pickupLocationId String
+  pickupLocation   Location @relation("OfferPickup", fields: [pickupLocationId], references: [id])
+
+  /// Photos of the actual lot. Array order is the display order and the first
+  /// entry is the lead image. MOCK STORAGE: downscaled JPEG data URLs, so a
+  /// real bucket later changes the value in this column and nothing else.
+  photoUrls String[] @default([])
+
+  /// Tiny version of the lead photo, rendered on the marketplace list. Kept
+  /// apart so the board does not ship full-size images to a phone on rural
+  /// mobile data.
+  thumbnailUrl String?
+
+  /// Paid promotion (mock fee). Orthogonal to `status`: a highlighted offer
+  /// is still just an offer, it only sorts first and is marked in the UI.
+  isHighlighted   Boolean   @default(false)
+  highlightedAt   DateTime?
+  /// Snapshot of what the farmer was charged; the list price will change.
+  highlightFeeNet Decimal?  @db.Decimal(10, 2)
+
+  quality   GrainQuality?
+  purchase  Purchase?
+  charges   PlatformCharge[]
+  documents Document[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, grainType])
+  @@index([farmerId])
+  @@index([createdAt])
+  /// Buyer board ordering: highlighted first, then newest.
+  @@index([status, isHighlighted, createdAt])
+}
+
+/// Lab / declared parameters of a grain batch (1:1 with the offer).
+model GrainQuality {
+  id      String     @id @default(cuid())
+  offerId String     @unique
+  offer   GrainOffer @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  moisture       Decimal? @db.Decimal(5, 2) // wilgotność %
+  protein        Decimal? @db.Decimal(5, 2) // białko %
+  gluten         Decimal? @db.Decimal(5, 2) // gluten %
+  fallingNumber  Int? // liczba opadania (s)
+  testWeight     Decimal? @db.Decimal(5, 2) // gęstość w stanie zsypnym kg/hl
+  impurities     Decimal? @db.Decimal(5, 2) // zanieczyszczenia %
+  damagedGrains  Decimal? @db.Decimal(5, 2) // ziarna uszkodzone %
+  sproutedGrains Decimal? @db.Decimal(5, 2) // ziarna porośnięte %
+  /// Describes the lot. Attachments live in `Document` — the board badge
+  /// reads those, so it cannot claim more than was actually uploaded.
+  isCertified    Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// 2. Purchase — created by BUYER, closes the offer
+// ---------------------------------------------------------------------------
+
+model Purchase {
+  id        String @id @default(cuid())
+  reference String @unique @default(cuid())
+
+  /// One purchase closes one offer (whole-lot trading in the MVP).
+  offerId String     @unique
+  offer   GrainOffer @relation(fields: [offerId], references: [id], onDelete: Restrict)
+
+  buyerId String
+  buyer   User   @relation("PurchaseBuyer", fields: [buyerId], references: [id], onDelete: Restrict)
+
+  /// Terms snapshotted at purchase time so later offer edits cannot rewrite history.
+  tonnage       Decimal @db.Decimal(10, 2)
+  pricePerTonne Decimal @db.Decimal(10, 2)
+  totalNet      Decimal @db.Decimal(12, 2)
+  currency      String  @default("PLN")
+
+  status PurchaseStatus @default(PENDING)
+  notes  String?        @db.Text
+
+  deliveryLocationId String
+  deliveryLocation   Location @relation("PurchaseDelivery", fields: [deliveryLocationId], references: [id])
+
+  expectedDeliveryAt DateTime?
+  settledAt          DateTime?
+
+  transportJob TransportJob?
+  reviews      Review[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([buyerId])
+}
+
+// ---------------------------------------------------------------------------
+// 3. Transport job — auto-generated on purchase, claimed by TRANSPORT
+// ---------------------------------------------------------------------------
+
+model TransportJob {
+  id        String @id @default(cuid())
+  reference String @unique @default(cuid())
+
+  /// Auto-created when a purchase is made; one job per purchase.
+  purchaseId String   @unique
+  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+
+  status TransportJobStatus @default(AVAILABLE)
+
+  /// Null until a haulier accepts the job from the freight board.
+  carrierId String?
+  carrier   User?   @relation("JobCarrier", fields: [carrierId], references: [id], onDelete: SetNull)
+
+  pickupLocationId String
+  pickupLocation   Location @relation("JobPickup", fields: [pickupLocationId], references: [id])
+
+  deliveryLocationId String
+  deliveryLocation   Location @relation("JobDelivery", fields: [deliveryLocationId], references: [id])
+
+  tonnage    Decimal @db.Decimal(10, 2)
+  distanceKm Int?
+
+  /// Freight rate, net. Offered by the platform, negotiable later.
+  ratePerTonne Decimal? @db.Decimal(10, 2)
+  totalNet     Decimal? @db.Decimal(12, 2)
+  currency     String   @default("PLN")
+
+  vehicleType  VehicleType?
+  vehiclePlate String?
+  driverName   String?
+  driverPhone  String?
+
+  pickupFrom DateTime?
+  pickupTo   DateTime?
+  deliverBy  DateTime?
+
+  acceptedAt  DateTime?
+  pickedUpAt  DateTime?
+  deliveredAt DateTime?
+
+  /// Pay-per-lead: claiming the job charges a flat commission. Written in the
+  /// same transaction as the accept, so a claimed job always carries its fee.
+  commissionFeePaid Boolean   @default(false)
+  commissionFeeNet  Decimal?  @db.Decimal(10, 2)
+  commissionPaidAt  DateTime?
+
+  reviews Review[]
+  charges PlatformCharge[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([carrierId])
+}
+
+// ---------------------------------------------------------------------------
+// 3a. Compliance — uploaded certificates and licences
+// ---------------------------------------------------------------------------
+
+/// Uploaded evidence: lab results, ISCC/GMP+ certificates, carrier licences.
+///
+/// MOCK STORAGE. No file leaves the browser in this MVP — only the metadata
+/// below is kept. `url` holds a fake path where an object-storage key will go
+/// later, so swapping in real storage touches this one field.
+model Document {
+  id    String        @id @default(cuid())
+  scope DocumentScope
+  kind  DocumentKind
+
+  /// Exactly one of these is set, matching `scope` (CHECK constraint).
+  offerId   String?
+  offer     GrainOffer? @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  carrierId String?
+  carrier   User?       @relation("CarrierDocuments", fields: [carrierId], references: [id], onDelete: Cascade)
+
+  fileName  String
+  mimeType  String
+  sizeBytes Int
+  url       String
+
+  /// Who issued it, e.g. "SGS Polska", "ISCC System GmbH".
+  issuer     String?
+  issuedAt   DateTime?
+  /// An expired GMP+ proves nothing, so the UI greys it out past this date.
+  /// Null means the document does not expire.
+  validUntil DateTime?
+
+  /// Admin confirmation. Being attached and being verified are separate facts;
+  /// nothing in the MVP verifies anything yet.
+  isVerified Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([offerId])
+  @@index([carrierId, kind])
+}
+
+// ---------------------------------------------------------------------------
+// 3b. Monetisation — mock charges, one row per billable event
+// ---------------------------------------------------------------------------
+
+/// Append-only ledger of every (mock) charge. The booleans on GrainOffer and
+/// TransportJob answer "is this paid?"; this answers "what did the platform
+/// earn, from whom, for what?", which is what the ADMIN view reports on.
+/// No payment provider is involved — rows are written by the action layer.
+model PlatformCharge {
+  id   String     @id @default(cuid())
+  kind ChargeKind
+
+  /// Who was charged.
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  amountNet Decimal @db.Decimal(10, 2)
+  currency  String  @default("PLN")
+
+  /// At most one of these is set, matching `kind`. A subscription charge has
+  /// neither. Kept nullable so deleting an offer never erases the revenue.
+  offerId        String?
+  offer          GrainOffer?   @relation(fields: [offerId], references: [id], onDelete: SetNull)
+  transportJobId String?
+  transportJob   TransportJob? @relation(fields: [transportJobId], references: [id], onDelete: SetNull)
+
+  /// Free-text description shown in the admin table, e.g. "Wyróżnienie oferty".
+  description String?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([kind, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// 4. Admin
+// ---------------------------------------------------------------------------
+
+/// Append-only trail of state transitions, surfaced in the ADMIN dashboard.
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action     String // e.g. "offer.published", "purchase.created"
+  entityType String // e.g. "GrainOffer"
+  entityId   String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// 5. Reputation — reviews are always anchored to one real transaction
+// ---------------------------------------------------------------------------
+
+enum ReviewScope {
+  TRADE // buyer <-> farmer, anchored to a Purchase
+  TRANSPORT // carrier <-> counterparty, anchored to a TransportJob
+}
+
+/// A review can only exist as the by-product of a transaction between the two
+/// parties. Exactly one of `purchaseId` / `transportJobId` is set (enforced by
+/// a CHECK constraint), the author must have been a party to it (enforced in
+/// the action layer), and each author may review each counterparty once per
+/// transaction (enforced by the unique indexes below).
+model Review {
+  id    String      @id @default(cuid())
+  scope ReviewScope
+
+  purchaseId String?
+  purchase   Purchase? @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+
+  transportJobId String?
+  transportJob   TransportJob? @relation(fields: [transportJobId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation("ReviewAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+
+  subjectId String
+  subject   User   @relation("ReviewSubject", fields: [subjectId], references: [id], onDelete: Cascade)
+
+  /// 1–5. Range enforced by a CHECK constraint and by Zod.
+  rating  Int
+  comment String? @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // One review per author, per counterparty, per transaction. NULLs do not
+  // collide in Postgres, so each pair of indexes only guards its own scope.
+  @@unique([purchaseId, authorId, subjectId])
+  @@unique([transportJobId, authorId, subjectId])
+  @@index([subjectId])
+}

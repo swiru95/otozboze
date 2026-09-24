@@ -1,0 +1,149 @@
+{
+  "realm": "otozboze",
+  "displayName": "otozboze.pl (local dev)",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "accessTokenLifespan": 1800,
+  "roles": {
+    "realm": [
+      { "name": "FARMER", "description": "May list grain offers" },
+      { "name": "BUYER", "description": "May purchase grain offers" },
+      { "name": "TRANSPORT", "description": "May accept freight jobs" },
+      { "name": "ADMIN", "description": "Full platform access" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "otozboze-web",
+      "name": "otozboze.pl web app",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "dev-otozboze-secret",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "rootUrl": "http://localhost:3000",
+      "baseUrl": "http://localhost:3000",
+      "redirectUris": [
+        "http://localhost:3000/api/auth/callback/keycloak",
+        "http://localhost:3000/*"
+      ],
+      "webOrigins": ["http://localhost:3000"],
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:3000/*"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+      ],
+      "protocolMappers": [
+        {
+          "name": "realm roles as cognito:groups",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "claim.name": "cognito:groups",
+            "jsonType.label": "String",
+            "multivalued": "true",
+            "access.token.claim": "true",
+            "id.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "jan.kowalski",
+      "email": "jan.kowalski@otozboze.local",
+      "emailVerified": true,
+      "firstName": "Jan",
+      "lastName": "Kowalski",
+      "enabled": true,
+      "credentials": [{ "type": "password", "value": "dev", "temporary": false }],
+      "realmRoles": ["FARMER"]
+    },
+    {
+      "username": "maria.kowalska",
+      "email": "maria.kowalska@otozboze.local",
+      "emailVerified": true,
+      "firstName": "Maria",
+      "lastName": "Kowalska",
+      "enabled": true,
+      "credentials": [{ "type": "password", "value": "dev", "temporary": false }],
+      "realmRoles": ["FARMER", "TRANSPORT"]
+    },
+    {
+      "username": "anna.nowak",
+      "email": "anna.nowak@otozboze.local",
+      "emailVerified": true,
+      "firstName": "Anna",
+      "lastName": "Nowak",
+      "enabled": true,
+      "credentials": [{ "type": "password", "value": "dev", "temporary": false }],
+      "realmRoles": ["BUYER"]
+    },
+    {
+      "username": "tomasz.wisniewski",
+      "email": "tomasz.wisniewski@otozboze.local",
+      "emailVerified": true,
+      "firstName": "Tomasz",
+      "lastName": "Wisniewski",
+      "enabled": true,
+      "credentials": [{ "type": "password", "value": "dev", "temporary": false }],
+      "realmRoles": ["BUYER", "FARMER"]
+    },
+    {
+      "username": "piotr.zielinski",
+      "email": "piotr.zielinski@otozboze.local",
+      "emailVerified": true,
+      "firstName": "Piotr",
+      "lastName": "Zielinski",
+      "enabled": true,
+      "credentials": [{ "type": "password", "value": "dev", "temporary": false }],
+      "realmRoles": ["BUYER"]
+    },
+    {
+      "username": "katarzyna.lewandowska",
+      "email": "katarzyna.lewandowska@otozboze.local",
+      "emailVerified": true,
+      "firstName": "Katarzyna",
+      "lastName": "Lewandowska",
+      "enabled": true,
+      "credentials": [{ "type": "password", "value": "dev", "temporary": false }],
+      "realmRoles": ["TRANSPORT"]
+    },
+    {
+      "username": "marek.wojcik",
+      "email": "marek.wojcik@otozboze.local",
+      "emailVerified": true,
+      "firstName": "Marek",
+      "lastName": "Wojcik",
+      "enabled": true,
+      "credentials": [{ "type": "password", "value": "dev", "temporary": false }],
+      "realmRoles": ["TRANSPORT", "BUYER"]
+    },
+    {
+      "username": "admin",
+      "email": "admin@otozboze.local",
+      "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "Platformy",
+      "enabled": true,
+      "credentials": [{ "type": "password", "value": "dev", "temporary": false }],
+      "realmRoles": ["ADMIN", "FARMER", "BUYER", "TRANSPORT"]
+    }
+  ]
+}

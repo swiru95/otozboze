@@ -32,6 +32,8 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# ...ale szablon musi trafic do repozytorium, bo README kaze go skopiowac.
+!.env.example
 
 # vercel
 .vercel
@@ -39,3 +41,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma
+
+# Lokalne narzedzia agentow. Zawartosc odtwarza sie ze skills-lock.json,
+# wiec 71 zwendorowanych plikow nie musi siedziec w repozytorium.
+/.agents/
+/.windsurf/
+/.claude/skills/
+/.claude/settings.local.json
