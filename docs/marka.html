@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>otozboze.pl — paleta i marka</title>
+<meta name="description" content="Paleta barw, typografia i zasady marki otozboze.pl. Te same tokeny, których używa produkt.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,600;0,800;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styl.css">
+<style>
+  /* ---- Elementy występujące tylko na stronie marki ---- */
+
+  .probki {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 1rem;
+  }
+
+  .probka {
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--ground-2);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .probka__plama {
+    height: 5.5rem;
+    display: flex;
+    align-items: flex-end;
+    padding: 0.6rem 0.75rem;
+    font-family: var(--font-dane);
+    font-size: var(--t--1);
+    font-weight: 600;
+  }
+
+  .probka__opis {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .probka__nazwa { font-weight: 600; font-size: var(--t-0); }
+
+  .probka__kod {
+    font-family: var(--font-dane);
+    font-size: var(--t--1);
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .probka__rola { font-size: var(--t--1); color: var(--ink-soft); line-height: 1.45; }
+
+  /* Okaz typograficzny */
+  .okaz {
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: var(--ground-2);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .okaz__wiersz {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: 1.25rem;
+    align-items: baseline;
+  }
+
+  @media (max-width: 34rem) {
+    .okaz__wiersz { grid-template-columns: 1fr; gap: 0.3rem; }
+  }
+
+  .okaz__etykieta {
+    font-family: var(--font-dane);
+    font-size: var(--t--1);
+    color: var(--ink-soft);
+    letter-spacing: 0.06em;
+  }
+
+  .okaz__tekst { min-width: 0; overflow-wrap: anywhere; }
+
+  .alfabet {
+    font-size: var(--t-2);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  /* Logotyp na tle */
+  .lockupy {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1rem;
+  }
+
+  .lockup {
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 9rem;
+  }
+
+  .lockup .logo { font-size: 1.75rem; }
+  .lockup__podpis { font-family: var(--font-dane); font-size: var(--t--1); color: var(--ink-soft); }
+
+  .lockup--jasny { background: var(--ground); }
+  .lockup--karta { background: var(--ground-2); }
+  .lockup--ciemny { background: #15140e; border-color: #3a382d; }
+  .lockup--ciemny .logo { color: #f3f2ed; }
+  .lockup--ciemny .logo em { color: #68c36d; }
+  .lockup--ciemny .logo span { color: #a9a496; }
+  .lockup--ciemny .lockup__podpis { color: #a9a496; }
+  .lockup--klos { background: var(--klos); }
+  .lockup--klos .logo { color: var(--klos-ink); }
+  .lockup--klos .logo em { color: #0f4a1a; }
+  .lockup--klos .logo span { color: #6b5320; }
+  .lockup--klos .lockup__podpis { color: var(--klos-ink); }
+
+  /* Tak / nie tak */
+  .zasady {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1rem;
+  }
+
+  .zasada {
+    border: 1px solid var(--rule);
+    border-left-width: 4px;
+    border-radius: 4px;
+    background: var(--ground-2);
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .zasada--tak { border-left-color: var(--ok); }
+  .zasada--nie { border-left-color: var(--stop); }
+
+  .zasada__glowka {
+    font-family: var(--font-dane);
+    font-size: var(--t--1);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .zasada--tak .zasada__glowka { color: var(--ok); }
+  .zasada--nie .zasada__glowka { color: var(--stop); }
+
+  .zasada p { font-size: var(--t-0); color: var(--ink-soft); }
+
+  /* Skala odstępów */
+  .skala { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  .skala__wiersz {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .skala__belka { height: 1rem; background: var(--zyto); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<header class="szczyt">
+  <div class="obszar szczyt__rzad">
+    <a class="logo" href="index.html">otoz<em>boze</em><span>.pl</span></a>
+    <nav class="nawigacja" aria-label="Nawigacja główna">
+      <a href="index.html">Strona główna</a>
+      <a href="prezentacja.html">Prezentacja</a>
+      <a href="#kolory">Kolory</a>
+      <a href="#typografia">Typografia</a>
+      <a href="#logotyp">Logotyp</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="sekcja">
+    <div class="obszar stos stos-m">
+      <p class="nadtytul nadtytul--zyto">Księga marki</p>
+      <h1 class="tytul-l">Paleta, typografia i zasady</h1>
+      <p class="lead">
+        Wszystkie wartości poniżej pochodzą wprost z pliku
+        <span class="dane">src/app/globals.css</span>. Materiały marketingowe
+        i produkt używają jednej palety — zmiana tokenu w aplikacji musi trafić
+        także tutaj, inaczej marka zacznie się rozjeżdżać.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== IDEA ===================== -->
+  <section class="sekcja sekcja--ciasna sekcja--pas">
+    <div class="obszar stos stos-m">
+      <p class="nadtytul">Punkt wyjścia</p>
+      <h2 class="tytul-m">Skąd te barwy</h2>
+      <div class="kolumna-tekstu stos stos-s">
+        <p class="proza">
+          Paleta jest zdjęta z pola w porze żniw, a nie z generatora. Podłożem
+          jest kość słoniowa, nie czysta biel — ekran telefonu czytany w pełnym
+          słońcu mniej razi i dłużej się na niego patrzy. Atrament jest ciepłą
+          czernią z domieszką brązu, bo czysta szarość obok złota kłosa wygląda
+          jak pomyłka drukarni.
+        </p>
+        <p class="proza">
+          Kolorem podstawowym jest zieleń oziminy. Akcentem — złoto dojrzałego
+          kłosa, używane oszczędnie i tylko tam, gdzie coś naprawdę wymaga uwagi.
+          Trzy barwy ról odpowiadają trzem stronom handlu: zieleń pola, błękit
+          Wisły i ochra traktu.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== KOLORY ===================== -->
+  <section class="sekcja" id="kolory">
+    <div class="obszar stos stos-xl">
+
+      <div class="stos stos-m">
+        <p class="nadtytul">Kolory marki</p>
+        <h2 class="tytul-l">Podstawa</h2>
+        <div class="probki">
+          <div class="probka">
+            <div class="probka__plama" style="background:#1e6626; color:#fcfaf6;">#1E6626</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Żyto</span>
+              <span class="probka__kod">oklch(0.45 0.12 145)</span>
+              <span class="probka__rola">Kolor podstawowy. Przyciski akcji, logotyp, linki, stany powodzenia.</span>
+            </div>
+          </div>
+          <div class="probka">
+            <div class="probka__plama" style="background:#fadb90; color:#382409;">#FADB90</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Kłos</span>
+              <span class="probka__kod">oklch(0.9 0.1 88)</span>
+              <span class="probka__rola">Akcent. Wyróżnione oferty, zaznaczenie tekstu, podkreślenia. Nigdy jako tło całej sekcji.</span>
+            </div>
+          </div>
+          <div class="probka">
+            <div class="probka__plama" style="background:#fcfaf6; color:#221811; border-bottom:1px solid #dcd7cf;">#FCFAF6</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Kość słoniowa</span>
+              <span class="probka__kod">oklch(0.985 0.006 90)</span>
+              <span class="probka__rola">Podłoże strony. Mniej odbić w słońcu niż czysta biel.</span>
+            </div>
+          </div>
+          <div class="probka">
+            <div class="probka__plama" style="background:#221811; color:#fcfaf6;">#221811</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Atrament</span>
+              <span class="probka__kod">oklch(0.22 0.02 60)</span>
+              <span class="probka__rola">Tekst podstawowy. Ciepła czerń, nie szarość.</span>
+            </div>
+          </div>
+          <div class="probka">
+            <div class="probka__plama" style="background:#5e534a; color:#fcfaf6;">#5E534A</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Atrament wyblakły</span>
+              <span class="probka__kod">oklch(0.45 0.02 60)</span>
+              <span class="probka__rola">Tekst drugorzędny, opisy, podpisy.</span>
+            </div>
+          </div>
+          <div class="probka">
+            <div class="probka__plama" style="background:#dcd7cf; color:#221811;">#DCD7CF</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Linia</span>
+              <span class="probka__kod">oklch(0.88 0.012 80)</span>
+              <span class="probka__rola">Obramowania, linie włosowe, podziały tabel.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stos stos-m">
+        <p class="nadtytul">Barwy ról</p>
+        <h2 class="tytul-m">Jedna barwa na uprawnienie</h2>
+        <p class="lead">
+          Barwa roli niesie informację, nie ozdobę. Ta sama zieleń oznacza
+          rolnika w nawigacji, na odznace roli i na górnej krawędzi bloku.
+          Konto z trzema uprawnieniami zawsze wie, w jakim kapeluszu stoi.
+        </p>
+        <div class="probki">
+          <div class="probka">
+            <div class="probka__plama" style="background:#1e6626; color:#fcfaf6;">#1E6626</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Rolnik</span>
+              <span class="probka__kod">oklch(0.45 0.12 145)</span>
+              <span class="probka__rola">Zieleń pola. Ten, kto zasiał.</span>
+            </div>
+          </div>
+          <div class="probka">
+            <div class="probka__plama" style="background:#065da0; color:#fcfaf6;">#065DA0</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Kupujący</span>
+              <span class="probka__kod">oklch(0.47 0.13 250)</span>
+              <span class="probka__rola">Błękit Wisły. Ten, kto kupuje i odbiera.</span>
+            </div>
+          </div>
+          <div class="probka">
+            <div class="probka__plama" style="background:#964e00; color:#fcfaf6;">#964E00</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Przewoźnik</span>
+              <span class="probka__kod">oklch(0.5 0.13 62)</span>
+              <span class="probka__rola">Ochra traktu. Ten, kto wiezie.</span>
+            </div>
+          </div>
+          <div class="probka">
+            <div class="probka__plama" style="background:#4b4b5d; color:#fcfaf6;">#4B4B5D</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Administrator</span>
+              <span class="probka__kod">oklch(0.42 0.03 285)</span>
+              <span class="probka__rola">Przywilej platformy, nie rola handlowa. Celowo bez barwy pola.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stos stos-m">
+        <p class="nadtytul">Znaczenie</p>
+        <h2 class="tytul-m">Stany</h2>
+        <p class="lead">
+          Barwy znaczeniowe są oddzielone od akcentu. Złoto kłosa nigdy nie
+          oznacza powodzenia ani błędu.
+        </p>
+        <div class="probki">
+          <div class="probka">
+            <div class="probka__plama" style="background:#005e26; color:#fcfaf6;">#005E26</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Powodzenie</span>
+              <span class="probka__kod">oklch(0.42 0.12 150)</span>
+              <span class="probka__rola">Potwierdzona sprzedaż, zaakceptowany przewoźnik.</span>
+            </div>
+          </div>
+          <div class="probka">
+            <div class="probka__plama" style="background:#8a4c00; color:#fcfaf6;">#8A4C00</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Uwaga</span>
+              <span class="probka__kod">oklch(0.48 0.13 70)</span>
+              <span class="probka__rola">Rezerwacja czekająca na odpowiedź, dokument po terminie.</span>
+            </div>
+          </div>
+          <div class="probka">
+            <div class="probka__plama" style="background:#c2181d; color:#fcfaf6;">#C2181D</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Zatrzymanie</span>
+              <span class="probka__kod">oklch(0.52 0.2 27)</span>
+              <span class="probka__rola">Odrzucenie, wycofanie oferty, błąd operacji.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stos stos-m">
+        <p class="nadtytul">Tryb ciemny</p>
+        <h2 class="tytul-m">Ta sama paleta po zmroku</h2>
+        <p class="lead">
+          Tryb ciemny nie odwraca barw, tylko przesuwa je tak, żeby kontrast
+          został. Zieleń rozjaśnia się do <span class="dane">#68C36D</span>,
+          podłoże schodzi do <span class="dane">#15140E</span>.
+        </p>
+        <div class="probki">
+          <div class="probka">
+            <div class="probka__plama" style="background:#15140e; color:#f3f2ed;">#15140E</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Podłoże nocne</span>
+              <span class="probka__kod">oklch(0.19 0.012 100)</span>
+              <span class="probka__rola">Tło strony w trybie ciemnym.</span>
+            </div>
+          </div>
+          <div class="probka">
+            <div class="probka__plama" style="background:#1f1e17; color:#f3f2ed;">#1F1E17</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Karta nocna</span>
+              <span class="probka__kod">oklch(0.235 0.014 100)</span>
+              <span class="probka__rola">Bloki i kolumny na ciemnym podłożu.</span>
+            </div>
+          </div>
+          <div class="probka">
+            <div class="probka__plama" style="background:#68c36d; color:#15140e;">#68C36D</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Żyto nocne</span>
+              <span class="probka__kod">oklch(0.74 0.15 145)</span>
+              <span class="probka__rola">Kolor podstawowy w trybie ciemnym.</span>
+            </div>
+          </div>
+          <div class="probka">
+            <div class="probka__plama" style="background:#f3f2ed; color:#15140e;">#F3F2ED</div>
+            <div class="probka__opis">
+              <span class="probka__nazwa">Atrament nocny</span>
+              <span class="probka__kod">oklch(0.96 0.006 90)</span>
+              <span class="probka__rola">Tekst podstawowy na ciemnym podłożu.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== TYPOGRAFIA ===================== -->
+  <section class="sekcja sekcja--pas" id="typografia">
+    <div class="obszar stos stos-xl">
+
+      <div class="stos stos-m">
+        <p class="nadtytul">Typografia</p>
+        <h2 class="tytul-l">Trzy kroje, trzy zadania</h2>
+        <p class="lead">
+          Każdy krój ma pełny zestaw polskich znaków diakrytycznych. To nie jest
+          drobiazg — nazwy odmian, miejscowości i dokumentów bez ogonków wyglądają
+          na niedokończone.
+        </p>
+      </div>
+
+      <div class="okaz">
+        <div class="okaz__wiersz">
+          <span class="okaz__etykieta">Nagłówki</span>
+          <div class="okaz__tekst">
+            <p style="font-family: var(--font-naglowek); font-weight: 800; font-size: var(--t-3); line-height: 1.15;">Bitter — szeryf blokowy</p>
+            <p class="probka__rola">Solidny, lekko przemysłowy. Pasuje do tablicy giełdowej i do napisu na spichlerzu. Używany w wadze 800 do nagłówków i 400 kursywą do cytatów.</p>
+          </div>
+        </div>
+        <div class="okaz__wiersz">
+          <span class="okaz__etykieta">Tekst</span>
+          <div class="okaz__tekst">
+            <p style="font-family: var(--font-tekst); font-size: var(--t-2); line-height: 1.4;">IBM Plex Sans — tekst ciągły</p>
+            <p class="probka__rola">Neutralny, ale nie bezosobowy. Dobrze znosi długie akapity i małe rozmiary na telefonie.</p>
+          </div>
+        </div>
+        <div class="okaz__wiersz">
+          <span class="okaz__etykieta">Liczby</span>
+          <div class="okaz__tekst">
+            <p class="dane" style="font-size: var(--t-2); font-weight: 500;">IBM Plex Mono — 1 234,56 zł/t</p>
+            <p class="probka__rola">Ceny, tonaże, numery transakcji, nadtytuły i zmiany statusu. Zawsze z cyframi tabelarycznymi, żeby kolumny się zgadzały.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="okaz">
+        <p class="nadtytul">Polskie znaki</p>
+        <p class="alfabet" style="font-family: var(--font-naglowek); font-weight: 800;">ĄĆĘŁŃÓŚŹŻ ąćęłńóśźż</p>
+        <p class="alfabet" style="font-family: var(--font-tekst);">Pszenżyto, jęczmień browarny, Środa Wielkopolska, wilgotność, liczba opadania</p>
+        <p class="alfabet dane" style="font-size: var(--t-1);">0123456789 · 45,50 t · 2 150 zł/t · OF-2026-0004</p>
+      </div>
+
+      <div class="stos stos-m">
+        <p class="nadtytul">Skala</p>
+        <div class="okaz">
+          <div class="okaz__wiersz">
+            <span class="okaz__etykieta">Hasło</span>
+            <p class="okaz__tekst tytul-xl" style="font-size: var(--t-4);">Od pola do młyna</p>
+          </div>
+          <div class="okaz__wiersz">
+            <span class="okaz__etykieta">Sekcja</span>
+            <p class="okaz__tekst tytul-m">Jedna transakcja, sześć kroków</p>
+          </div>
+          <div class="okaz__wiersz">
+            <span class="okaz__etykieta">Blok</span>
+            <p class="okaz__tekst tytul-s">Dokumenty partii</p>
+          </div>
+          <div class="okaz__wiersz">
+            <span class="okaz__etykieta">Wprowadzenie</span>
+            <p class="okaz__tekst lead" style="max-width: none;">Zlecenia powstają automatycznie z potwierdzonych transakcji.</p>
+          </div>
+          <div class="okaz__wiersz">
+            <span class="okaz__etykieta">Tekst</span>
+            <p class="okaz__tekst">Rolnik wystawia partię z parametrami i dokumentami, a kupujący widzi ją obok innych ofert.</p>
+          </div>
+          <div class="okaz__wiersz">
+            <span class="okaz__etykieta">Nadtytuł</span>
+            <p class="okaz__tekst nadtytul" style="display:block;">Model przychodowy</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== LOGOTYP ===================== -->
+  <section class="sekcja" id="logotyp">
+    <div class="obszar stos stos-xl">
+
+      <div class="stos stos-m">
+        <p class="nadtytul">Logotyp</p>
+        <h2 class="tytul-l">Znak słowny</h2>
+        <p class="lead">
+          Logotyp jest zapisem adresu, a nie osobnym symbolem. Zieleń pada na
+          człon <span class="dane">boze</span>, końcówka domeny zostaje wyblakła.
+          Wszystko małymi literami, bez odstępu, jak wpisuje się adres w
+          przeglądarce.
+        </p>
+      </div>
+
+      <div class="lockupy">
+        <div class="lockup lockup--jasny">
+          <span class="logo">otoz<em>boze</em><span>.pl</span></span>
+          <span class="lockup__podpis">na podłożu strony</span>
+        </div>
+        <div class="lockup lockup--karta">
+          <span class="logo">otoz<em>boze</em><span>.pl</span></span>
+          <span class="lockup__podpis">na karcie</span>
+        </div>
+        <div class="lockup lockup--ciemny">
+          <span class="logo">otoz<em>boze</em><span>.pl</span></span>
+          <span class="lockup__podpis">na ciemnym</span>
+        </div>
+        <div class="lockup lockup--klos">
+          <span class="logo">otoz<em>boze</em><span>.pl</span></span>
+          <span class="lockup__podpis">na akcencie</span>
+        </div>
+      </div>
+
+      <div class="stos stos-m">
+        <p class="nadtytul">Znak graficzny</p>
+        <div class="okaz" style="flex-direction: row; align-items: center; gap: 2rem; flex-wrap: wrap;">
+          <img src="favicon.svg" alt="Znak otozboze.pl: kłos zboża" width="96" height="96" style="border: 1px solid var(--rule); border-radius: 8px;">
+          <div class="stos stos-xs" style="flex: 1; min-width: 14rem;">
+            <p class="probka__nazwa">Kłos</p>
+            <p class="probka__rola">
+              Pięć ziaren i źdźbło. Używany samodzielnie tylko tam, gdzie nie
+              mieści się znak słowny: ikona karty przeglądarki, awatar konta,
+              znacznik na mapie. Zawsze w zieleni żyta na jasnym podłożu.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="stos stos-m">
+        <p class="nadtytul">Zasady</p>
+        <div class="zasady">
+          <div class="zasada zasada--tak">
+            <span class="zasada__glowka">Tak</span>
+            <p>Zieleń wyłącznie na członie <span class="dane">boze</span>, reszta atramentem.</p>
+          </div>
+          <div class="zasada zasada--nie">
+            <span class="zasada__glowka">Nie</span>
+            <p>Nie rozbijaj logotypu na dwie linie ani nie dodawaj odstępów między członami.</p>
+          </div>
+          <div class="zasada zasada--tak">
+            <span class="zasada__glowka">Tak</span>
+            <p>Na ciemnym podłożu użyj rozjaśnionej zieleni <span class="dane">#68C36D</span>.</p>
+          </div>
+          <div class="zasada zasada--nie">
+            <span class="zasada__glowka">Nie</span>
+            <p>Nie kładź logotypu na zdjęciu pola ani na gradiencie. Podłoże ma być jednolite.</p>
+          </div>
+          <div class="zasada zasada--tak">
+            <span class="zasada__glowka">Tak</span>
+            <p>Zostaw wokół znaku wolną przestrzeń równą wysokości litery <span class="dane">o</span>.</p>
+          </div>
+          <div class="zasada zasada--nie">
+            <span class="zasada__glowka">Nie</span>
+            <p>Nie zmieniaj kroju na inny szeryf ani nie pochylaj znaku słownego.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== RYTM ===================== -->
+  <section class="sekcja sekcja--pas">
+    <div class="obszar stos stos-xl">
+
+      <div class="stos stos-m">
+        <p class="nadtytul">Rytm</p>
+        <h2 class="tytul-m">Odstępy i narożniki</h2>
+        <p class="lead">
+          Jeden promień zaokrąglenia dla wszystkiego — <span class="dane">4 px</span>
+          w materiałach, <span class="dane">0.625 rem</span> jako podstawa w aplikacji.
+          Blok ma wyglądać jak wpis w księdze, nie jak pływający kafelek.
+        </p>
+        <div class="okaz">
+          <div class="skala">
+            <div class="skala__wiersz"><span class="okaz__etykieta">0,5 rem</span><div class="skala__belka" style="width: 0.5rem;"></div></div>
+            <div class="skala__wiersz"><span class="okaz__etykieta">0,875 rem</span><div class="skala__belka" style="width: 0.875rem;"></div></div>
+            <div class="skala__wiersz"><span class="okaz__etykieta">1,5 rem</span><div class="skala__belka" style="width: 1.5rem;"></div></div>
+            <div class="skala__wiersz"><span class="okaz__etykieta">2,5 rem</span><div class="skala__belka" style="width: 2.5rem;"></div></div>
+            <div class="skala__wiersz"><span class="okaz__etykieta">4 rem</span><div class="skala__belka" style="width: 4rem;"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stos stos-m">
+        <p class="nadtytul">Język</p>
+        <h2 class="tytul-m">Jak piszemy</h2>
+        <div class="zasady">
+          <div class="zasada zasada--tak">
+            <span class="zasada__glowka">Tak</span>
+            <p>Cały interfejs po polsku. Kod, komentarze i nazwy w repozytorium po angielsku.</p>
+          </div>
+          <div class="zasada zasada--tak">
+            <span class="zasada__glowka">Tak</span>
+            <p>Przycisk mówi, co się stanie: „Potwierdź sprzedaż”, nie „Zatwierdź”.</p>
+          </div>
+          <div class="zasada zasada--tak">
+            <span class="zasada__glowka">Tak</span>
+            <p>Nazywamy rzeczy językiem wsi i skupu: partia, tonaż, odbiór, kurs, fracht.</p>
+          </div>
+          <div class="zasada zasada--nie">
+            <span class="zasada__glowka">Nie</span>
+            <p>Bez żargonu systemowego w interfejsie. Użytkownik widzi rezerwację, nie rekord.</p>
+          </div>
+          <div class="zasada zasada--nie">
+            <span class="zasada__glowka">Nie</span>
+            <p>Bez obietnic, których produkt nie dotrzymuje. Symulacja jest nazywana symulacją.</p>
+          </div>
+          <div class="zasada zasada--nie">
+            <span class="zasada__glowka">Nie</span>
+            <p>Bez przepraszania w komunikatach błędu. Piszemy, co poszło źle i co z tym zrobić.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer class="stopka">
+  <div class="obszar stopka__rzad">
+    <div class="stos stos-xs">
+      <a class="logo" href="index.html" style="font-size: 1.125rem;">otoz<em>boze</em><span>.pl</span></a>
+      <p>Księga marki. Tokeny pochodzą z src/app/globals.css.</p>
+    </div>
+    <div class="stos stos-xs">
+      <p><a href="index.html">Strona główna</a> &middot; <a href="prezentacja.html">Prezentacja</a></p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

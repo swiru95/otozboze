@@ -1,0 +1,65 @@
+name: otozboze
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: otozboze-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: otozboze
+      POSTGRES_PASSWORD: otozboze
+      POSTGRES_DB: otozboze
+      # Consumed by ./docker/postgres/init/01-create-keycloak-db.sh
+      KEYCLOAK_DB: keycloak
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U otozboze -d otozboze"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Local Identity Provider. Dev mode: HTTP only, no clustering — never use in prod.
+  # Realm, client, roles and demo users are imported from ./docker/keycloak/realm/.
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.4
+    container_name: otozboze-keycloak
+    restart: unless-stopped
+    command: ["start-dev", "--import-realm"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: otozboze
+      KC_DB_PASSWORD: otozboze
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
+      KC_HEALTH_ENABLED: "true"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./docker/keycloak/realm:/opt/keycloak/data/import:ro
+
+  # Optional: web UI for poking at the database. `docker compose --profile tools up`
+  adminer:
+    image: adminer:5
+    container_name: otozboze-adminer
+    restart: unless-stopped
+    profiles: ["tools"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    ports:
+      - "8081:8080"
+
+volumes:
+  postgres-data:
