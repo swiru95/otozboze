@@ -1,0 +1,685 @@
+/* =========================================================================
+   otozboze.pl — arkusz marek i materiałów marketingowych
+   Paleta pochodzi z src/app/globals.css. Produkt i materiały używają tych
+   samych wartości; zmiana tokenu w aplikacji musi trafić także tutaj.
+   ========================================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* --- Podłoża i atrament ------------------------------------------------ */
+  --ground: #fcfaf6;      /* kość słoniowa — czytelna w pełnym słońcu */
+  --ground-2: #ffffff;    /* karta, kolumna */
+  --ground-3: #f3f0e9;    /* pas wyróżniony */
+  --ink: #221811;         /* ciepła czerń, nigdy czysta szarość */
+  --ink-soft: #5e534a;
+  --rule: #dcd7cf;
+  --rule-strong: #cfcac1;
+
+  /* --- Kolory marki ------------------------------------------------------ */
+  --zyto: #1e6626;        /* zieleń pola — kolor podstawowy */
+  --zyto-deep: #005e26;
+  --klos: #fadb90;        /* złoto dojrzałego kłosa — akcent */
+  --klos-ink: #382409;
+
+  /* --- Role (jedna barwa na uprawnienie, tak jak w aplikacji) ------------ */
+  --rola-rolnik: #1e6626;
+  --rola-kupujacy: #065da0;
+  --rola-przewoznik: #964e00;
+  --rola-admin: #4b4b5d;
+
+  /* --- Znaczenie --------------------------------------------------------- */
+  --ok: #005e26;
+  --uwaga: #8a4c00;
+  --stop: #c2181d;
+
+  /* --- Typografia -------------------------------------------------------- */
+  --font-naglowek: "Bitter", "Georgia", serif;
+  --font-tekst: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-dane: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+
+  --t--1: 0.8125rem;
+  --t-0: 1rem;
+  --t-1: 1.125rem;
+  --t-2: 1.375rem;
+  --t-3: 1.75rem;
+  --t-4: clamp(2rem, 1.4rem + 2.4vw, 3rem);
+  --t-5: clamp(2.5rem, 1.5rem + 4.4vw, 4.5rem);
+
+  /* --- Rytm -------------------------------------------------------------- */
+  --gutter: clamp(1rem, 0.4rem + 2.6vw, 3rem);
+  --szer: 72rem;
+  --szer-tekst: 38rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --ground: #15140e;
+    --ground-2: #1f1e17;
+    --ground-3: #302e25;
+    --ink: #f3f2ed;
+    --ink-soft: #a9a496;
+    --rule: #3a382d;
+    --rule-strong: #4a4738;
+    --zyto: #68c36d;
+    --zyto-deep: #8ad78e;
+    --klos: #f0cf7e;
+    --klos-ink: #1f1a06;
+    --rola-rolnik: #68c36d;
+    --rola-kupujacy: #7fb2ee;
+    --rola-przewoznik: #d99a4e;
+    --rola-admin: #a8a6bd;
+    --ok: #68c36d;
+    --uwaga: #d99a4e;
+    --stop: #f08a84;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ground: #15140e;
+  --ground-2: #1f1e17;
+  --ground-3: #302e25;
+  --ink: #f3f2ed;
+  --ink-soft: #a9a496;
+  --rule: #3a382d;
+  --rule-strong: #4a4738;
+  --zyto: #68c36d;
+  --zyto-deep: #8ad78e;
+  --klos: #f0cf7e;
+  --klos-ink: #1f1a06;
+  --rola-rolnik: #68c36d;
+  --rola-kupujacy: #7fb2ee;
+  --rola-przewoznik: #d99a4e;
+  --rola-admin: #a8a6bd;
+  --ok: #68c36d;
+  --uwaga: #d99a4e;
+  --stop: #f08a84;
+}
+
+/* =========================================================================
+   Podstawy
+   ========================================================================= */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font-tekst);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  font-feature-settings: "kern" 1;
+}
+
+img, svg { max-width: 100%; }
+[hidden] { display: none !important; }
+
+h1, h2, h3, h4 {
+  font-family: var(--font-naglowek);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  margin: 0;
+}
+
+p { margin: 0; }
+
+a {
+  color: var(--zyto);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+
+a:hover { text-decoration-thickness: 2px; }
+
+:focus-visible {
+  outline: 3px solid var(--zyto);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection { background: var(--klos); color: var(--klos-ink); }
+
+/* =========================================================================
+   Układ
+   ========================================================================= */
+
+.obszar {
+  width: 100%;
+  max-width: var(--szer);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.sekcja { padding-block: clamp(3.5rem, 2rem + 6vw, 6.5rem); }
+.sekcja--ciasna { padding-block: clamp(2.5rem, 1.5rem + 4vw, 4rem); }
+.sekcja--pas { background: var(--ground-3); }
+
+.kreska { border-top: 1px solid var(--rule); }
+
+.kolumna-tekstu { max-width: var(--szer-tekst); }
+
+.stos { display: flex; flex-direction: column; }
+.stos-xs { gap: 0.5rem; }
+.stos-s { gap: 0.875rem; }
+.stos-m { gap: 1.5rem; }
+.stos-l { gap: 2.5rem; }
+.stos-xl { gap: clamp(2.5rem, 1.5rem + 3vw, 4rem); }
+
+/* =========================================================================
+   Elementy typograficzne
+   ========================================================================= */
+
+/* Nadtytuł w stylu główki kolumny w księdze spichlerza. */
+.nadtytul {
+  font-family: var(--font-dane);
+  font-size: var(--t--1);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nadtytul::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+.nadtytul--zyto { color: var(--zyto); }
+
+.tytul-xl { font-size: var(--t-5); }
+.tytul-l { font-size: var(--t-4); }
+.tytul-m { font-size: var(--t-3); }
+.tytul-s { font-size: var(--t-2); }
+
+.lead {
+  font-size: var(--t-1);
+  color: var(--ink-soft);
+  max-width: var(--szer-tekst);
+}
+
+.proza { max-width: var(--szer-tekst); }
+.proza + .proza { margin-top: 1rem; }
+
+.dane {
+  font-family: var(--font-dane);
+  font-variant-numeric: tabular-nums;
+}
+
+.wyroz { color: var(--zyto); font-weight: 600; }
+
+/* =========================================================================
+   Logotyp
+   ========================================================================= */
+
+.logo {
+  font-family: var(--font-naglowek);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+.logo em { font-style: normal; color: var(--zyto); }
+.logo span { color: var(--ink-soft); font-weight: 600; }
+
+/* =========================================================================
+   Przyciski
+   ========================================================================= */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.4rem;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-family: var(--font-tekst);
+  font-size: var(--t-0);
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.btn--glowny {
+  background: var(--zyto);
+  color: var(--ground);
+  border-color: var(--zyto);
+}
+
+.btn--glowny:hover { background: var(--zyto-deep); border-color: var(--zyto-deep); }
+
+.btn--obrys {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--rule-strong);
+}
+
+.btn--obrys:hover { border-color: var(--ink); }
+
+.rzad-akcji {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* =========================================================================
+   Siatki
+   ========================================================================= */
+
+.siatka {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.siatka--2 { grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); }
+.siatka--3 { grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+.siatka--4 { grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
+
+/* =========================================================================
+   Kolumna — blok w stylu wpisu w księdze, nie pływająca karta
+   ========================================================================= */
+
+.kolumna {
+  background: var(--ground-2);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Górna linia niesie kolor roli — to informacja, nie ozdoba. */
+.kolumna--rola { border-top-width: 4px; border-top-style: solid; }
+.kolumna--rolnik { border-top-color: var(--rola-rolnik); }
+.kolumna--kupujacy { border-top-color: var(--rola-kupujacy); }
+.kolumna--przewoznik { border-top-color: var(--rola-przewoznik); }
+
+.kolumna h3 { font-size: var(--t-2); }
+
+.kolumna__roli {
+  font-family: var(--font-dane);
+  font-size: var(--t--1);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.kolumna--rolnik .kolumna__roli { color: var(--rola-rolnik); }
+.kolumna--kupujacy .kolumna__roli { color: var(--rola-kupujacy); }
+.kolumna--przewoznik .kolumna__roli { color: var(--rola-przewoznik); }
+
+.kolumna ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  color: var(--ink-soft);
+  font-size: var(--t-0);
+}
+
+/* =========================================================================
+   Liczby
+   ========================================================================= */
+
+.liczby {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.liczba {
+  background: var(--ground-2);
+  padding: 1.25rem 1.25rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.liczba__wartosc {
+  font-family: var(--font-naglowek);
+  font-weight: 800;
+  font-size: var(--t-3);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--zyto);
+}
+
+.liczba__opis { font-size: var(--t--1); color: var(--ink-soft); line-height: 1.4; }
+
+/* =========================================================================
+   Oś czasu — trakt wiślany biegnący w dół strony
+   ========================================================================= */
+
+.trakt {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-left: 2px solid var(--rule);
+  padding-left: 0;
+  margin-left: 0.5rem;
+}
+
+.przystanek {
+  position: relative;
+  padding: 0 0 2.25rem 1.75rem;
+}
+
+.przystanek:last-child { padding-bottom: 0; }
+
+.przystanek::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 0.55rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--rola-kupujacy);
+  border: 2px solid var(--ground);
+}
+
+.przystanek--dzis::before { background: var(--zyto); }
+
+.przystanek__data {
+  font-family: var(--font-dane);
+  font-size: var(--t--1);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--rola-kupujacy);
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.przystanek--dzis .przystanek__data { color: var(--zyto); }
+
+.przystanek h3 {
+  font-size: var(--t-2);
+  margin-bottom: 0.4rem;
+}
+
+.przystanek p { color: var(--ink-soft); }
+
+/* =========================================================================
+   Kroki procesu — prawdziwa sekwencja, więc numeracja niesie treść
+   ========================================================================= */
+
+.kroki {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.krok {
+  display: grid;
+  grid-template-columns: 3.25rem 1fr;
+  gap: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--ground-2);
+  align-items: start;
+}
+
+.krok + .krok { border-top: 1px solid var(--rule); }
+
+.krok__nr {
+  font-family: var(--font-dane);
+  font-size: var(--t-2);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-soft);
+  line-height: 1.3;
+}
+
+.krok__tresc { display: flex; flex-direction: column; gap: 0.3rem; }
+
+.krok h3 { font-size: var(--t-1); font-family: var(--font-tekst); font-weight: 700; }
+
+.krok p { color: var(--ink-soft); font-size: var(--t-0); }
+
+.krok__aktor {
+  font-family: var(--font-dane);
+  font-size: var(--t--1);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.krok__aktor--rolnik { color: var(--rola-rolnik); }
+.krok__aktor--kupujacy { color: var(--rola-kupujacy); }
+.krok__aktor--przewoznik { color: var(--rola-przewoznik); }
+
+/* Zmiana stanu zapisana tak, jak widzi ją system. */
+.przejscie {
+  font-family: var(--font-dane);
+  font-size: var(--t--1);
+  color: var(--ink-soft);
+  background: var(--ground-3);
+  border-radius: 3px;
+  padding: 0.15rem 0.5rem;
+  display: inline-block;
+  /* Rodzic jest kolumną flex, więc bez tego plakietka rozciąga się na całą
+     szerokość i przestaje wyglądać jak plakietka. */
+  align-self: flex-start;
+  margin-top: 0.3rem;
+}
+
+/* =========================================================================
+   Pasek notowań
+   ========================================================================= */
+
+.notowania {
+  border-block: 1px solid var(--rule);
+  background: var(--ground-2);
+  overflow: hidden;
+  padding-block: 0.6rem;
+}
+
+.notowania__tasma {
+  display: flex;
+  gap: 2.5rem;
+  width: max-content;
+  animation: przesuw 48s linear infinite;
+}
+
+.notowania__tasma > * { flex: none; }
+
+@keyframes przesuw {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notowania { overflow-x: auto; }
+  .notowania__tasma { animation: none; }
+}
+
+.kurs {
+  font-family: var(--font-dane);
+  font-size: var(--t--1);
+  font-variant-numeric: tabular-nums;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.kurs__nazwa { color: var(--ink-soft); }
+.kurs__cena { font-weight: 600; color: var(--ink); }
+.kurs--gora { color: var(--ok); }
+.kurs--dol { color: var(--stop); }
+
+/* =========================================================================
+   Nagłówek strony
+   ========================================================================= */
+
+.szczyt {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: color-mix(in srgb, var(--ground) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule);
+}
+
+.szczyt__rzad {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-height: 4rem;
+  flex-wrap: wrap;
+}
+
+.szczyt .logo { font-size: 1.25rem; }
+
+.nawigacja {
+  display: flex;
+  gap: 1.25rem;
+  margin-left: auto;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.nawigacja a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-size: var(--t--1);
+  font-weight: 500;
+}
+
+.nawigacja a:hover { color: var(--ink); text-decoration: underline; }
+
+@media (max-width: 40rem) {
+  .nawigacja { display: none; }
+}
+
+/* =========================================================================
+   Stopka
+   ========================================================================= */
+
+.stopka {
+  border-top: 1px solid var(--rule);
+  padding-block: 2.5rem 3rem;
+  color: var(--ink-soft);
+  font-size: var(--t--1);
+}
+
+.stopka__rzad {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+/* =========================================================================
+   Etykiety
+   ========================================================================= */
+
+.etykieta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-dane);
+  font-size: var(--t--1);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 3px;
+  border: 1px solid currentColor;
+}
+
+.etykieta--prototyp { color: var(--uwaga); }
+.etykieta--klos { color: var(--klos-ink); background: var(--klos); border-color: var(--klos); }
+
+/* =========================================================================
+   Cytat
+   ========================================================================= */
+
+.cytat {
+  border-left: 3px solid var(--klos);
+  padding-left: 1.25rem;
+  font-family: var(--font-naglowek);
+  font-size: var(--t-2);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.4;
+  max-width: var(--szer-tekst);
+}
+
+.cytat__zrodlo {
+  display: block;
+  margin-top: 0.6rem;
+  font-family: var(--font-dane);
+  font-size: var(--t--1);
+  font-style: normal;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+}
+
+/* =========================================================================
+   Tabela
+   ========================================================================= */
+
+.tabela-otoczka {
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 34rem;
+  background: var(--ground-2);
+  font-size: var(--t-0);
+}
+
+th, td {
+  text-align: left;
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+
+thead th {
+  font-family: var(--font-dane);
+  font-size: var(--t--1);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  background: var(--ground-3);
+}
+
+tbody tr:last-child td { border-bottom: none; }
+
+td.liczbowo { font-family: var(--font-dane); font-variant-numeric: tabular-nums; }

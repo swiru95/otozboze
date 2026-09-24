@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# otozboze.pl
 
-## Getting Started
+Giełda zbóż B2B łącząca rolników, kupujących i przewoźników. Prototyp MVP:
+Next.js 16 (App Router), Prisma 7, PostgreSQL 17, Tailwind v4, shadcn/ui.
 
-First, run the development server:
+Zasady inżynierskie i niezmienniki domenowe opisuje `CLAUDE.md` — przeczytaj je
+przed pierwszą zmianą w kodzie.
+
+## Uruchomienie lokalne
+
+Wymagane: Node 20+, Docker.
 
 ```bash
+cp .env.example .env
+npm install
+npm run db:up          # Postgres + Keycloak w Dockerze
+npm run db:migrate     # zakłada schemat
+npx prisma db seed     # 8 kont, 16 ofert, transakcje i oceny
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Aplikacja startuje na http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tryb demo — nie ma logowania
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Prototyp działa bez logowania. Aktywne konto trzyma ciasteczko, a menu w prawym
+górnym rogu pozwala wcielić się w dowolne konto z seeda. To **obejście
+uwierzytelniania**, więc jest włączone tylko poza produkcyjnym buildem.
 
-## Learn More
+Autoryzacja działa normalnie w obu trybach: `requireCapability()` czyta
+`roles` z bazy, nigdy z sesji ani z pola formularza.
 
-To learn more about Next.js, take a look at the following resources:
+Żeby świadomie włączyć tryb demo na wdrożeniu, ustaw `DEMO_MODE=true`. Bez tego
+i bez podpiętego dostawcy tożsamości każda strona zgłosi brak sesji. Auth.js i
+Keycloak są w zależnościach, ale nie są jeszcze skonfigurowane.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Konta w seedzie
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Konto | Role |
+| --- | --- |
+| Jan Kowalski | rolnik |
+| Maria Kowalska | rolnik, przewoźnik |
+| Anna Nowak | kupujący (plan PRO) |
+| Tomasz Wiśniewski | kupujący, rolnik |
+| Piotr Zieliński | kupujący |
+| Katarzyna Lewandowska | przewoźnik |
+| Marek Wójcik | przewoźnik, kupujący |
+| Admin Platformy | wszystkie |
 
-## Deploy on Vercel
+Role są flagami uprawnień, nie tożsamością — jedno konto może sprzedawać,
+kupować i wozić.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Ścieżka transakcji
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`GrainOffer → Purchase → TransportJob`. Rolnik wystawia partię, kupujący ją
+rezerwuje, rolnik potwierdza sprzedaż i wtedy powstaje zlecenie transportowe.
+Przewoźnik zgłasza się do kursu, a kupujący akceptuje przewoźnika. Obie strony
+zatwierdzają każdy krok, żadna nie jest związana decyzją drugiej.
+
+Rezerwacja bez odpowiedzi wygasa po 72 godzinach i partia wraca na giełdę.
+Kupujący może też wycofać własną rezerwację, dopóki rolnik jej nie potwierdził.
+
+Płatności między stronami są poza platformą. Przychód platformy — wyróżnienie
+oferty, prowizja transportowa i abonament PRO — jest symulowany i zapisywany w
+`PlatformCharge`.
+
+## Strona projektu i materiały marketingowe
+
+Katalog `docs/` zawiera statyczną witrynę gotową pod GitHub Pages. Nie jest
+częścią aplikacji Next.js i nie wchodzi do builda.
+
+| Plik | Co to jest |
+| --- | --- |
+| `docs/index.html` | Strona marketingowa: historia, problem, rozwiązanie, przebieg transakcji, model |
+| `docs/prezentacja.html` | Prezentacja w 12 planszach, sterowana strzałkami |
+| `docs/marka.html` | Księga marki: paleta, typografia, logotyp, zasady języka |
+| `docs/styl.css` | Wspólne tokeny. Paleta jest przepisana z `src/app/globals.css` |
+
+Podgląd lokalny bez budowania czegokolwiek:
+
+```bash
+python3 -m http.server 4321 --directory docs
+```
+
+Żeby opublikować witrynę, repozytorium musi najpierw trafić na GitHuba — dziś
+nie ma skonfigurowanego zdalnego repozytorium. Po wypchnięciu wejdź w
+**Settings → Pages**, wybierz źródło **Deploy from a branch**, gałąź `main`
+i katalog `/docs`. Strona pojawi się pod adresem
+`https://<użytkownik>.github.io/otozboze/`.
+
+Plik `docs/.nojekyll` wyłącza przetwarzanie przez Jekyll, więc pliki są
+serwowane dokładnie takie, jakie są w repozytorium.
+
+Zmiana tokenu w `src/app/globals.css` musi trafić także do `docs/styl.css`.
+Obie palety są celowo tą samą paletą — jeśli się rozjadą, produkt i materiały
+przestaną wyglądać jak jeden projekt.
+
+## Przydatne polecenia
+
+```bash
+npm run dev            # serwer deweloperski
+npm run typecheck      # tsc --noEmit
+npm run lint           # eslint
+npm run build          # build produkcyjny
+npm run db:studio      # Prisma Studio
+npm run db:reset       # kasuje wolumeny i stawia bazę od nowa
+```
+
+Przed uznaniem zmiany za gotową uruchom `npm run typecheck`, `npm run lint`
+i `npm run build`.

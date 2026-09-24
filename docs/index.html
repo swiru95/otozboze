@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>otozboze.pl — giełda zbóż B2B</title>
+<meta name="description" content="Giełda zbóż B2B łącząca rolników, kupujących i przewoźników. Partia, transakcja i transport w jednym miejscu, bez pośrednika w środku.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="otozboze.pl — giełda zbóż B2B">
+<meta property="og:description" content="Rolnik, kupujący i przewoźnik przy jednym stole. Od pola do młyna, bez pośrednika w środku.">
+<meta property="og:locale" content="pl_PL">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,600;0,800;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styl.css">
+</head>
+<body>
+
+<header class="szczyt">
+  <div class="obszar szczyt__rzad">
+    <a class="logo" href="index.html">otoz<em>boze</em><span>.pl</span></a>
+    <nav class="nawigacja" aria-label="Nawigacja główna">
+      <a href="#historia">Historia</a>
+      <a href="#problem">Problem</a>
+      <a href="#jak-dziala">Jak działa</a>
+      <a href="#role">Dla kogo</a>
+      <a href="#funkcje">Funkcje</a>
+      <a href="#model">Model</a>
+      <a href="prezentacja.html">Prezentacja</a>
+      <a href="marka.html">Marka</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Pasek notowań. Wartości są poglądowe, tak samo jak w samej aplikacji —
+     etykieta mówi o tym wprost, żeby nikt nie wziął ich za kurs rzeczywisty. -->
+<div class="notowania" aria-label="Notowania poglądowe">
+  <div class="notowania__tasma" aria-hidden="true">
+    <span class="kurs"><span class="kurs__nazwa">Pszenica MATIF</span> <span class="kurs__cena">214,50</span> <span class="kurs--gora">▲ 0,42%</span></span>
+    <span class="kurs"><span class="kurs__nazwa">Kukurydza MATIF</span> <span class="kurs__cena">197,25</span> <span class="kurs--dol">▼ 0,84%</span></span>
+    <span class="kurs"><span class="kurs__nazwa">Rzepak MATIF</span> <span class="kurs__cena">482,75</span> <span class="kurs--gora">▲ 1,12%</span></span>
+    <span class="kurs"><span class="kurs__nazwa">Pszenica konsum. (kraj)</span> <span class="kurs__cena">985 zł/t</span> <span class="kurs--dol">▼ 0,31%</span></span>
+    <span class="kurs"><span class="kurs__nazwa">Żyto (kraj)</span> <span class="kurs__cena">762 zł/t</span> <span class="kurs--gora">▲ 0,58%</span></span>
+    <span class="kurs"><span class="kurs__nazwa">Rzepak (kraj)</span> <span class="kurs__cena">2150 zł/t</span> <span class="kurs--dol">▼ 0,22%</span></span>
+    <span class="kurs"><span class="kurs__nazwa">Notowania poglądowe</span></span>
+    <span class="kurs"><span class="kurs__nazwa">Pszenica MATIF</span> <span class="kurs__cena">214,50</span> <span class="kurs--gora">▲ 0,42%</span></span>
+    <span class="kurs"><span class="kurs__nazwa">Kukurydza MATIF</span> <span class="kurs__cena">197,25</span> <span class="kurs--dol">▼ 0,84%</span></span>
+    <span class="kurs"><span class="kurs__nazwa">Rzepak MATIF</span> <span class="kurs__cena">482,75</span> <span class="kurs--gora">▲ 1,12%</span></span>
+    <span class="kurs"><span class="kurs__nazwa">Pszenica konsum. (kraj)</span> <span class="kurs__cena">985 zł/t</span> <span class="kurs--dol">▼ 0,31%</span></span>
+    <span class="kurs"><span class="kurs__nazwa">Żyto (kraj)</span> <span class="kurs__cena">762 zł/t</span> <span class="kurs--gora">▲ 0,58%</span></span>
+    <span class="kurs"><span class="kurs__nazwa">Rzepak (kraj)</span> <span class="kurs__cena">2150 zł/t</span> <span class="kurs--dol">▼ 0,22%</span></span>
+    <span class="kurs"><span class="kurs__nazwa">Notowania poglądowe</span></span>
+  </div>
+</div>
+
+<main>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="sekcja">
+    <div class="obszar stos stos-l">
+      <div class="stos stos-m">
+        <p class="nadtytul nadtytul--zyto">Giełda zbóż B2B &middot; Polska</p>
+        <h1 class="tytul-xl">Od pola do młyna,<br>bez pośrednika w środku.</h1>
+        <p class="lead">
+          Przez czterysta lat zboże z polskich pól płynęło Wisłą do Gdańska, a cenę
+          ustalały trzy strony: ten, kto zasiał, ten, kto kupował, i ten, kto wiózł.
+          <strong class="wyroz">otozboze.pl</strong> sadza je z powrotem przy jednym
+          stole — tym razem na ekranie telefonu w kabinie ciągnika.
+        </p>
+      </div>
+
+      <div class="rzad-akcji">
+        <a class="btn btn--glowny" href="#jak-dziala">Zobacz, jak to działa</a>
+        <a class="btn btn--obrys" href="prezentacja.html">Prezentacja projektu</a>
+        <span class="etykieta etykieta--prototyp">Prototyp MVP</span>
+      </div>
+
+      <div class="liczby">
+        <div class="liczba">
+          <span class="liczba__wartosc">37,1 mln t</span>
+          <span class="liczba__opis">zbiory zbóż w Polsce w 2025 r. (GUS)</span>
+        </div>
+        <div class="liczba">
+          <span class="liczba__wartosc">~7 mln ha</span>
+          <span class="liczba__opis">powierzchnia zasiewów zbóż w kraju</span>
+        </div>
+        <div class="liczba">
+          <span class="liczba__wartosc">1. w UE</span>
+          <span class="liczba__opis">miejsce Polski w produkcji pszenżyta</span>
+        </div>
+        <div class="liczba">
+          <span class="liczba__wartosc">3 strony</span>
+          <span class="liczba__opis">rolnik, kupujący i przewoźnik w jednej transakcji</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== HISTORIA ===================== -->
+  <section class="sekcja sekcja--pas" id="historia">
+    <div class="obszar stos stos-xl">
+
+      <div class="stos stos-m">
+        <p class="nadtytul">Skąd to się bierze</p>
+        <h2 class="tytul-l">Polska rosła na zbożu</h2>
+        <div class="kolumna-tekstu stos stos-s">
+          <p class="proza">
+            Zboże nie jest w Polsce jednym z wielu towarów. Jest tym towarem, wokół
+            którego przez stulecia układało się wszystko inne: granice majątków,
+            kalendarz roku, drogi, miasta portowe i pieśni śpiewane po żniwach.
+            W XVI i XVII wieku Rzeczpospolitą nazywano <strong>spichlerzem
+            Europy</strong> — żyto i pszenica z Mazowsza, Wielkopolski i Kujaw
+            karmiły Amsterdam, Antwerpię i pół kontynentu.
+          </p>
+          <p class="proza">
+            Ten handel miał swoją drogę i swoich ludzi. Ziarno zsypywano do szkut
+            i galarów, płaskodennych łodzi, które flisacy spławiali Wisłą aż do
+            Gdańska. Tam czekała Wyspa Spichrzów — dzielnica zbudowana wyłącznie po
+            to, żeby przechowywać zboże, z budynkami nazywanymi jak żywe istoty.
+            Cena rodziła się w rozmowie: rolnik znał swoją partię, kupiec znał
+            rynek, flis znał trasę i porę wody.
+          </p>
+          <p class="proza">
+            Rytm roku wyznaczały żniwa. <strong>Dożynki</strong>, najstarsze polskie
+            święto plonów, do dziś kończą się wieńcem z kłosów wręczanym gospodarzowi.
+            Chlebem i solą wita się gościa w progu. W 1924 roku Władysław Reymont
+            dostał Nagrodę Nobla za <em>Chłopów</em> — powieść, której osią jest
+            po prostu cykl pracy na roli: jesień, zima, wiosna, lato.
+          </p>
+        </div>
+      </div>
+
+      <blockquote class="cytat">
+        „Nie rzucim ziemi, skąd nasz ród”
+        <cite class="cytat__zrodlo">Maria Konopnicka, „Rota”, 1908</cite>
+      </blockquote>
+
+      <div class="stos stos-m">
+        <p class="nadtytul">Trakt wiślany</p>
+        <div class="trakt">
+          <div class="przystanek">
+            <span class="przystanek__data">XVI–XVII w.</span>
+            <h3>Spichlerz Europy</h3>
+            <p>Polskie zboże staje się jednym z głównych towarów eksportowych kontynentu. Gospodarka folwarczna układa się wokół jednego pytania: ile ziarna spłynie w tym roku do portu.</p>
+          </div>
+          <div class="przystanek">
+            <span class="przystanek__data">Szkuty i galary</span>
+            <h3>Flisacy prowadzą ziarno do morza</h3>
+            <p>Wisła jest autostradą towarową. Flisactwo staje się zawodem z własnym prawem, gwarą i obrzędem, a trasa spławu — pierwszą polską infrastrukturą logistyczną.</p>
+          </div>
+          <div class="przystanek">
+            <span class="przystanek__data">Gdańsk</span>
+            <h3>Wyspa Spichrzów</h3>
+            <p>Setki spichlerzy w jednym miejscu: magazyn, giełda i bank w jednym. Tu partia zmienia właściciela, a jakość ziarna decyduje o cenie.</p>
+          </div>
+          <div class="przystanek">
+            <span class="przystanek__data">Co roku</span>
+            <h3>Dożynki i wieniec z kłosów</h3>
+            <p>Święto plonów przetrwało rozbiory, wojny i zmiany ustroju. Kłos w polskiej kulturze ludowej znaczy dostatek, ciągłość i to, że rok się udał.</p>
+          </div>
+          <div class="przystanek przystanek--dzis">
+            <span class="przystanek__data">Dziś</span>
+            <h3>37 milionów ton rocznie</h3>
+            <p>Polska jest największym producentem pszenżyta w Unii Europejskiej i jednym z czołowych producentów żyta. Zboże nadal jest tym, na czym stoi polska wieś — zmieniło się tylko to, jak się nim handluje.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="kolumna-tekstu">
+        <p class="proza">
+          <strong>I tu jest cały pomysł.</strong> Trzy strony tamtego handlu to
+          dokładnie te same trzy strony dzisiaj: ten, kto zasiał, ten, kto kupuje,
+          i ten, kto wiezie. Zniknął tylko stół, przy którym się spotykały.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PROBLEM ===================== -->
+  <section class="sekcja" id="problem">
+    <div class="obszar stos stos-l">
+      <div class="stos stos-m">
+        <p class="nadtytul">Problem</p>
+        <h2 class="tytul-l">Co się po drodze zepsuło</h2>
+        <p class="lead">
+          Rolnik ma zboże. Młyn albo skup go potrzebuje. Przewoźnik ma wolną
+          naczepę. Mimo to każda z tych stron pracuje osobno i przez telefon.
+        </p>
+      </div>
+
+      <div class="siatka siatka--3">
+        <div class="kolumna">
+          <h3>Cena znika w łańcuchu</h3>
+          <p>Między polem a młynem stoi kilku pośredników, a rolnik często poznaje
+          tylko jedną ofertę — tę, którą ktoś mu przywiózł. Notowania giełdowe są
+          publiczne, ale cena w skupie już nie.</p>
+        </div>
+        <div class="kolumna">
+          <h3>Jakości nie da się pokazać</h3>
+          <p>Wilgotność, białko, gluten, liczba opadania, wynik badania
+          laboratoryjnego, certyfikat ISCC czy GMP+ — to wszystko istnieje na
+          papierze w segregatorze, a nie tam, gdzie kupujący podejmuje decyzję.</p>
+        </div>
+        <div class="kolumna">
+          <h3>Transport dogadywany osobno</h3>
+          <p>Sprzedaż to dopiero połowa sprawy. Potem zaczyna się dzwonienie po
+          przewoźnikach, a puste kursy i niedopasowane terminy zjadają marżę po
+          obu stronach.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CZYM JEST ===================== -->
+  <section class="sekcja sekcja--pas">
+    <div class="obszar stos stos-l">
+      <div class="stos stos-m">
+        <p class="nadtytul">Rozwiązanie</p>
+        <h2 class="tytul-l">Czym jest otozboze.pl</h2>
+        <div class="kolumna-tekstu stos stos-s">
+          <p class="proza">
+            To giełda zbóż B2B, na której partia zboża, transakcja i jej transport
+            są jedną sprawą, a nie trzema. Rolnik wystawia partię z parametrami
+            i dokumentami. Kupujący widzi ją obok innych i rezerwuje. W chwili,
+            gdy rolnik potwierdzi sprzedaż, platforma sama tworzy zlecenie
+            transportowe i wystawia je na giełdę frachtową.
+          </p>
+          <p class="proza">
+            <strong>Czym nie jest:</strong> nie jest bankiem ani pośrednikiem
+            finansowym. Zapłata za zboże i za fracht idzie kanałem stron, poza
+            platformą. Platforma kojarzy strony, pilnuje kolejności kroków
+            i zapisuje, co zostało uzgodnione.
+          </p>
+        </div>
+      </div>
+
+      <div class="siatka siatka--4">
+        <div class="kolumna">
+          <p class="nadtytul">Zasada 1</p>
+          <h3 class="tytul-s">Obie strony zatwierdzają</h3>
+          <p>Kupno rezerwuje partię, rolnik ją potwierdza. Przewoźnik się zgłasza,
+          kupujący go akceptuje. Nikt nie jest związany decyzją drugiej strony.</p>
+        </div>
+        <div class="kolumna">
+          <p class="nadtytul">Zasada 2</p>
+          <h3 class="tytul-s">Warunki są zamrażane</h3>
+          <p>Tonaż i cena zapisują się w chwili zakupu. Późniejsza zmiana oferty
+          nie przepisze historii transakcji.</p>
+        </div>
+        <div class="kolumna">
+          <p class="nadtytul">Zasada 3</p>
+          <h3 class="tytul-s">Ocena z transakcji</h3>
+          <p>Opinię można wystawić wyłącznie kontrahentowi z konkretnej,
+          odbytej transakcji. Nie ma opinii bez handlu.</p>
+        </div>
+        <div class="kolumna">
+          <p class="nadtytul">Zasada 4</p>
+          <h3 class="tytul-s">Rola to uprawnienie</h3>
+          <p>Jedno konto może sprzedawać, kupować i wozić. Gospodarstwo z własnymi
+          ciągnikami nie potrzebuje trzech logowań.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== JAK DZIAŁA ===================== -->
+  <section class="sekcja" id="jak-dziala">
+    <div class="obszar stos stos-l">
+      <div class="stos stos-m">
+        <p class="nadtytul">Przebieg</p>
+        <h2 class="tytul-l">Jedna transakcja, sześć kroków</h2>
+        <p class="lead">
+          Kolejność nie jest umowna — system nie pozwoli jej ominąć. Przy każdym
+          kroku widać, co dzieje się ze statusem partii i zlecenia.
+        </p>
+      </div>
+
+      <div class="kroki">
+        <div class="krok">
+          <span class="krok__nr">01</span>
+          <div class="krok__tresc">
+            <span class="krok__aktor krok__aktor--rolnik">Rolnik</span>
+            <h3>Wystawia partię na giełdę</h3>
+            <p>Rodzaj zboża, rok zbioru, tonaż, cena za tonę i miejsce odbioru.
+            Do tego zdjęcia partii oraz badania i certyfikaty. Wystawienie jest
+            bezpłatne; opcjonalnie można wykupić wyróżnienie.</p>
+            <span class="przejscie dane">oferta: DRAFT → ACTIVE</span>
+          </div>
+        </div>
+        <div class="krok">
+          <span class="krok__nr">02</span>
+          <div class="krok__tresc">
+            <span class="krok__aktor krok__aktor--kupujacy">Kupujący</span>
+            <h3>Rezerwuje partię</h3>
+            <p>Partia znika z giełdy i trafia do rolnika do potwierdzenia.
+            Rezerwacja nie jest jeszcze sprzedażą. Kupujący może ją wycofać,
+            a jeśli rolnik nie odpowie w 72 godziny, partia wraca na giełdę sama.</p>
+            <span class="przejscie dane">oferta: ACTIVE → RESERVED &nbsp;·&nbsp; zakup: PENDING</span>
+          </div>
+        </div>
+        <div class="krok">
+          <span class="krok__nr">03</span>
+          <div class="krok__tresc">
+            <span class="krok__aktor krok__aktor--rolnik">Rolnik</span>
+            <h3>Potwierdza sprzedaż</h3>
+            <p>Dopiero teraz dochodzi do transakcji. W tej samej chwili platforma
+            zakłada zlecenie transportowe i wystawia je na giełdę frachtową ze
+            stawką wyliczoną z dystansu między miejscem odbioru a dostawy.</p>
+            <span class="przejscie dane">oferta: RESERVED → SOLD &nbsp;·&nbsp; transport: AVAILABLE</span>
+          </div>
+        </div>
+        <div class="krok">
+          <span class="krok__nr">04</span>
+          <div class="krok__tresc">
+            <span class="krok__aktor krok__aktor--przewoznik">Przewoźnik</span>
+            <h3>Zgłasza się po ładunek</h3>
+            <p>Na giełdzie frachtowej widzi trasę, tonaż, dystans, stawkę za tonę
+            i zarobek po prowizji. Zgłoszenie nic nie kosztuje — to jeszcze nie
+            jest przyjęty kurs.</p>
+            <span class="przejscie dane">transport: AVAILABLE → ASSIGNED</span>
+          </div>
+        </div>
+        <div class="krok">
+          <span class="krok__nr">05</span>
+          <div class="krok__tresc">
+            <span class="krok__aktor krok__aktor--kupujacy">Kupujący</span>
+            <h3>Akceptuje przewoźnika</h3>
+            <p>Widzi jego oceny i licencje, po czym zatwierdza albo odrzuca.
+            Dopiero akceptacja uruchamia kurs i dopiero wtedy naliczana jest
+            prowizja. Przewoźnik nigdy nie płaci za kontakt, który druga strona
+            może odrzucić.</p>
+            <span class="przejscie dane">transport: ASSIGNED → IN_TRANSIT</span>
+          </div>
+        </div>
+        <div class="krok">
+          <span class="krok__nr">06</span>
+          <div class="krok__tresc">
+            <span class="krok__aktor">Wszyscy</span>
+            <h3>Wystawiają oceny</h3>
+            <p>Każda strona ocenia tych, z którymi naprawdę miała do czynienia
+            w tej transakcji: kupujący rolnika, rolnik przewoźnika, przewoźnik
+            zleceniodawcę i załadunek.</p>
+            <span class="przejscie dane">ocena przypięta do transakcji</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ROLE ===================== -->
+  <section class="sekcja sekcja--pas" id="role">
+    <div class="obszar stos stos-l">
+      <div class="stos stos-m">
+        <p class="nadtytul">Dla kogo</p>
+        <h2 class="tytul-l">Trzy strony, jedno konto</h2>
+        <p class="lead">
+          Rola jest uprawnieniem, nie tożsamością. Gospodarstwo, które sprzedaje
+          własne zboże, wozi je swoim ciągnikiem i dokupuje od sąsiada, ma
+          wszystkie trzy i przełącza się między nimi jednym kliknięciem.
+        </p>
+      </div>
+
+      <div class="siatka siatka--3">
+        <div class="kolumna kolumna--rola kolumna--rolnik">
+          <p class="kolumna__roli">Rolnik</p>
+          <h3>Sprzedaję swoje zbiory</h3>
+          <ul>
+            <li>Wystawienie partii w trzech krokach, za darmo</li>
+            <li>Zdjęcia ziarna i dokumenty przy ofercie</li>
+            <li>Rezerwacje do potwierdzenia w jednym miejscu</li>
+            <li>Wyróżnienie oferty na szczycie giełdy</li>
+            <li>Ocena kupującego i przewoźnika po kursie</li>
+          </ul>
+        </div>
+        <div class="kolumna kolumna--rola kolumna--kupujacy">
+          <p class="kolumna__roli">Kupujący</p>
+          <h3>Skupuję do młyna lub elewatora</h3>
+          <ul>
+            <li>Giełda z filtrem po zbożu i województwie</li>
+            <li>Dokumenty i certyfikaty widoczne przy partii</li>
+            <li>Rezerwacja z pełnym podsumowaniem warunków</li>
+            <li>Wybór przewoźnika spośród zgłoszeń</li>
+            <li>Plan darmowy z limitem albo PRO bez limitu</li>
+          </ul>
+        </div>
+        <div class="kolumna kolumna--rola kolumna--przewoznik">
+          <p class="kolumna__roli">Przewoźnik</p>
+          <h3>Wożę ładunki masowe</h3>
+          <ul>
+            <li>Giełda frachtowa zasilana realnymi transakcjami</li>
+            <li>Trasa, dystans i zarobek po prowizji od razu widoczne</li>
+            <li>Licencja, OCP i GMP+ przy koncie</li>
+            <li>Zgłoszenie bez opłaty z góry</li>
+            <li>Reputacja budowana po obu stronach kursu</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FUNKCJE ===================== -->
+  <section class="sekcja" id="funkcje">
+    <div class="obszar stos stos-l">
+      <div class="stos stos-m">
+        <p class="nadtytul">Funkcje</p>
+        <h2 class="tytul-l">Co jest w środku</h2>
+      </div>
+
+      <div class="siatka siatka--3">
+        <div class="kolumna">
+          <h3 class="tytul-s">Giełda ofert</h3>
+          <p>Partie z tonażem, ceną za tonę i wartością netto. Filtr po rodzaju
+          zboża i województwie, sortowanie po cenie, tonażu i dacie. Oferty
+          wyróżnione trzymają się góry listy.</p>
+        </div>
+        <div class="kolumna">
+          <h3 class="tytul-s">Dokumenty partii</h3>
+          <p>Wyniki badań laboratoryjnych, ISCC EU, GMP+, oświadczenia EUDR
+          i świadectwa jakości. Dokument po terminie ważności jest wygaszany,
+          więc odznaka na giełdzie nie obiecuje więcej, niż faktycznie wgrano.</p>
+        </div>
+        <div class="kolumna">
+          <h3 class="tytul-s">Zdjęcia ziarna</h3>
+          <p>Do sześciu zdjęć partii, z miniaturą na liście. Zdjęcia są
+          zmniejszane w przeglądarce, żeby giełda otwierała się na wiejskim
+          zasięgu, a nie tylko na światłowodzie.</p>
+        </div>
+        <div class="kolumna">
+          <h3 class="tytul-s">Giełda frachtowa</h3>
+          <p>Zlecenia powstają automatycznie z potwierdzonych transakcji. Stawka
+          liczona z dystansu między odbiorem a dostawą, z widełkami dla krótkich
+          kursów.</p>
+        </div>
+        <div class="kolumna">
+          <h3 class="tytul-s">Oceny i reputacja</h3>
+          <p>Ocena istnieje wyłącznie jako produkt uboczny transakcji między
+          dwiema stronami. Jedna opinia na kontrahenta, na transakcję —
+          pilnuje tego sama baza danych.</p>
+        </div>
+        <div class="kolumna">
+          <h3 class="tytul-s">Przełącznik ról</h3>
+          <p>Konto z kilkoma uprawnieniami widzi wszystkie swoje sekcje i zmienia
+          kapelusz bez ponownego logowania. Nawigacja i kolory idą za aktywną rolą.</p>
+        </div>
+        <div class="kolumna">
+          <h3 class="tytul-s">Notowania rynkowe</h3>
+          <p>Pasek z kursami MATIF, CBOT i cenami skupu w kraju, żeby rolnik
+          ustawiał cenę z pełnym obrazem rynku przed oczami.</p>
+        </div>
+        <div class="kolumna">
+          <h3 class="tytul-s">Panel administratora</h3>
+          <p>Podgląd wszystkich ofert, transakcji, kursów, opłat i opinii.
+          Rejestr zmian stanu prowadzony osobno, wpis po wpisie.</p>
+        </div>
+        <div class="kolumna">
+          <h3 class="tytul-s">Zbudowane pod telefon</h3>
+          <p>Układ od początku projektowany na ekran w kabinie: duże cele dotyku,
+          kontrast czytelny w słońcu i lista, która nie ładuje megabajtów zdjęć.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== MODEL ===================== -->
+  <section class="sekcja sekcja--pas" id="model">
+    <div class="obszar stos stos-l">
+      <div class="stos stos-m">
+        <p class="nadtytul">Model przychodowy</p>
+        <h2 class="tytul-l">Platforma zarabia na dostępie, nie na ziarnie</h2>
+        <p class="lead">
+          Pieniądze za zboże i za fracht idą kanałem stron. Platforma nie bierze
+          procentu od wartości partii.
+        </p>
+      </div>
+
+      <div class="tabela-otoczka">
+        <table>
+          <caption class="dane" style="caption-side: bottom; text-align: left; padding: 0.7rem 1rem; color: var(--ink-soft); font-size: var(--t--1);">
+            Cennik poglądowy prototypu. Płatności nie są realizowane.
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Strumień</th>
+              <th scope="col">Kto płaci</th>
+              <th scope="col">Kiedy</th>
+              <th scope="col">Stawka netto</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Wyróżnienie oferty</td>
+              <td>Rolnik</td>
+              <td>Jednorazowo przy wystawieniu</td>
+              <td class="liczbowo">15 zł</td>
+            </tr>
+            <tr>
+              <td>Prowizja transportowa</td>
+              <td>Przewoźnik</td>
+              <td>Dopiero gdy kupujący zaakceptuje kurs</td>
+              <td class="liczbowo">10 zł</td>
+            </tr>
+            <tr>
+              <td>Abonament PRO</td>
+              <td>Kupujący</td>
+              <td>Miesięcznie</td>
+              <td class="liczbowo">199 zł</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="kolumna-tekstu">
+        <p class="proza">
+          Plan darmowy pozwala kupującemu handlować do miesięcznego limitu
+          wartości zakupów. PRO ten limit znosi. Prowizja transportowa naliczana
+          jest po akceptacji przewoźnika, nigdy przy zgłoszeniu — haulier nie
+          płaci za szansę, którą druga strona może odrzucić.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STATUS ===================== -->
+  <section class="sekcja" id="status">
+    <div class="obszar stos stos-l">
+      <div class="stos stos-m">
+        <p class="nadtytul">Uczciwie o stanie prac</p>
+        <h2 class="tytul-l">Gdzie dziś jest projekt</h2>
+      </div>
+
+      <div class="siatka siatka--2">
+        <div class="kolumna">
+          <p class="nadtytul nadtytul--zyto">Działa</p>
+          <ul>
+            <li>Pełna ścieżka od wystawienia partii do kursu w trasie</li>
+            <li>Dokumenty, certyfikaty i zdjęcia przy ofercie</li>
+            <li>Oceny przypięte do transakcji, po wszystkich stronach</li>
+            <li>Wygasanie rezerwacji i wycofanie jej przez kupującego</li>
+            <li>Stawka frachtu liczona z dystansu</li>
+            <li>Model przychodowy z rejestrem opłat</li>
+          </ul>
+        </div>
+        <div class="kolumna">
+          <p class="nadtytul">Następne kroki</p>
+          <ul>
+            <li>Parametry jakościowe ziarna widoczne i filtrowalne na giełdzie</li>
+            <li>Strona pojedynczej oferty pod własnym adresem</li>
+            <li>Wyszukiwarka i stronicowanie giełdy</li>
+            <li>Powiadomienia o rezerwacji i akceptacji</li>
+            <li>Domknięcie ścieżki do statusu „dostarczone”</li>
+            <li>Logowanie przez dostawcę tożsamości</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="kolumna-tekstu">
+        <p class="proza">
+          <span class="etykieta etykieta--prototyp">Prototyp MVP</span>
+        </p>
+        <p class="proza">
+          Wersja demonstracyjna działa bez logowania i na danych przykładowych.
+          Notowania rynkowe i płatności są symulowane. Celem tego etapu jest
+          pokazanie całej ścieżki transakcji od końca do końca, a nie obsługa
+          prawdziwego obrotu.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CTA ===================== -->
+  <section class="sekcja sekcja--ciasna kreska">
+    <div class="obszar stos stos-m">
+      <h2 class="tytul-m">Zobacz projekt od środka</h2>
+      <p class="lead">
+        Prezentacja przeprowadza przez całą historię i model w kilkunastu
+        planszach. Strona marki zbiera paletę, typografię i zasady używania
+        logotypu.
+      </p>
+      <div class="rzad-akcji">
+        <a class="btn btn--glowny" href="prezentacja.html">Otwórz prezentację</a>
+        <a class="btn btn--obrys" href="marka.html">Paleta i marka</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="stopka">
+  <div class="obszar stopka__rzad">
+    <div class="stos stos-xs">
+      <a class="logo" href="index.html" style="font-size: 1.125rem;">otoz<em>boze</em><span>.pl</span></a>
+      <p>Giełda zbóż B2B łącząca rolników, kupujących i przewoźników.</p>
+    </div>
+    <div class="stos stos-xs">
+      <p>Dane o zbiorach: Główny Urząd Statystyczny.</p>
+      <p>Prototyp MVP. Notowania i płatności są symulowane.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

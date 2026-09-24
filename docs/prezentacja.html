@@ -1,0 +1,698 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>otozboze.pl — prezentacja</title>
+<meta name="description" content="Prezentacja projektu otozboze.pl: historia polskiego handlu zbożem, problem, rozwiązanie, przebieg transakcji i model przychodowy.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,600;0,800;1,400&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="styl.css">
+<style>
+  html, body { height: 100%; }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Na wąskim ekranie deck przestaje udawać slajdy i po prostu się przewija. */
+  @media (max-width: 45rem) {
+    body { overflow: auto; }
+  }
+
+  .deck {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .plansza {
+    display: none;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-block: clamp(1.5rem, 1rem + 3vw, 4rem);
+  }
+
+  .plansza--aktywna { display: flex; flex-direction: column; }
+
+  .plansza__wnetrze {
+    width: 100%;
+    max-width: var(--szer);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.25rem, 0.8rem + 1.8vw, 2.25rem);
+    margin-block: auto;
+  }
+
+  /* Plansza tytułowa dostaje własny, ciemniejszy świat. */
+  .plansza--tytul {
+    background: var(--ink);
+    color: var(--ground);
+  }
+
+  .plansza--tytul .logo { color: var(--ground); font-size: clamp(1.75rem, 1rem + 3vw, 2.75rem); }
+  .plansza--tytul .logo em { color: #68c36d; }
+  .plansza--tytul .logo span { color: #a9a496; }
+  .plansza--tytul h1 { color: var(--ground); }
+  .plansza--tytul .lead { color: #c9c3b4; }
+  .plansza--tytul .nadtytul { color: #68c36d; }
+  .plansza--tytul .nadtytul::after { background: #4a4738; }
+
+  .plansza--pas { background: var(--ground-3); }
+
+  /* Pasek sterowania */
+  .pilot {
+    flex: none;
+    border-top: 1px solid var(--rule);
+    background: var(--ground-2);
+  }
+
+  .pilot__rzad {
+    max-width: var(--szer);
+    margin-inline: auto;
+    padding: 0.6rem var(--gutter);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .pilot__tytul {
+    font-family: var(--font-dane);
+    font-size: var(--t--1);
+    color: var(--ink-soft);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pilot__licznik {
+    font-family: var(--font-dane);
+    font-size: var(--t--1);
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-soft);
+  }
+
+  .pilot__btn {
+    border: 1px solid var(--rule-strong);
+    background: var(--ground);
+    color: var(--ink);
+    border-radius: 4px;
+    width: 2.25rem;
+    height: 2.25rem;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pilot__btn:hover:not(:disabled) { border-color: var(--ink); }
+  .pilot__btn:disabled { opacity: 0.35; cursor: default; }
+
+  .postep {
+    flex: none;
+    height: 3px;
+    background: var(--rule);
+  }
+
+  .postep__wypelnienie {
+    height: 100%;
+    background: var(--zyto);
+    width: 0;
+    transition: width 0.25s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .postep__wypelnienie { transition: none; }
+  }
+
+  /* Na wąskim ekranie pokazujemy wszystko po kolei. */
+  @media (max-width: 45rem) {
+    .deck { display: block; }
+    .plansza { display: flex !important; flex-direction: column; min-height: auto; overflow: visible; border-bottom: 1px solid var(--rule); }
+    .pilot, .postep { display: none; }
+  }
+
+  /* Elementy występujące tylko w prezentacji */
+  .duza-liczba {
+    font-family: var(--font-naglowek);
+    font-weight: 800;
+    font-size: clamp(2.5rem, 1.5rem + 4vw, 4rem);
+    line-height: 1;
+    color: var(--zyto);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .para {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: clamp(1.5rem, 1rem + 2vw, 3rem);
+    align-items: start;
+  }
+
+  .lista-mocna {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    font-size: var(--t-1);
+  }
+
+  .lista-mocna li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.9rem;
+    align-items: baseline;
+  }
+
+  .lista-mocna li::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    background: var(--klos);
+    border-radius: 1px;
+    transform: translateY(-0.15em);
+  }
+
+  .plansza--tytul .lista-mocna li::before { background: #68c36d; }
+
+  .przeplyw {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .przeplyw__etap {
+    background: var(--ground-2);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .przeplyw__nr {
+    font-family: var(--font-dane);
+    font-size: var(--t--1);
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+
+  .przeplyw__kto {
+    font-family: var(--font-dane);
+    font-size: var(--t--1);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .przeplyw__co { font-size: var(--t-0); font-weight: 600; line-height: 1.3; }
+  .przeplyw__stan { font-family: var(--font-dane); font-size: var(--t--1); color: var(--ink-soft); }
+
+  .kto--rolnik { color: var(--rola-rolnik); }
+  .kto--kupujacy { color: var(--rola-kupujacy); }
+  .kto--przewoznik { color: var(--rola-przewoznik); }
+
+  .podpowiedz {
+    font-family: var(--font-dane);
+    font-size: var(--t--1);
+    color: var(--ink-soft);
+  }
+
+  .plansza--tytul .podpowiedz { color: #a9a496; }
+</style>
+</head>
+<body>
+
+<div class="postep" aria-hidden="true"><div class="postep__wypelnienie" id="postep"></div></div>
+
+<div class="deck" id="deck">
+
+  <!-- 01 -->
+  <section class="plansza plansza--tytul plansza--aktywna" data-tytul="Tytuł">
+    <div class="plansza__wnetrze">
+      <span class="logo">otoz<em>boze</em><span>.pl</span></span>
+      <h1 class="tytul-xl">Od pola do młyna,<br>bez pośrednika w środku.</h1>
+      <p class="lead">
+        Giełda zbóż B2B, która sadza rolnika, kupującego i przewoźnika
+        przy jednym stole — tak jak przez stulecia sadzał ich trakt wiślany.
+      </p>
+      <p class="podpowiedz">Strzałki ← → przewijają plansze</p>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="plansza" data-tytul="Polska rosła na zbożu">
+    <div class="plansza__wnetrze">
+      <p class="nadtytul">Skąd to się bierze</p>
+      <h2 class="tytul-l">Polska rosła na zbożu</h2>
+      <div class="para">
+        <div class="stos stos-s">
+          <p>
+            Zboże nie jest w Polsce jednym z wielu towarów. Jest tym, wokół
+            którego przez stulecia układało się wszystko inne: granice majątków,
+            kalendarz roku, drogi i miasta portowe.
+          </p>
+          <p>
+            W XVI i XVII wieku Rzeczpospolitą nazywano <strong>spichlerzem
+            Europy</strong>. Żyto i pszenica z Mazowsza, Wielkopolski i Kujaw
+            karmiły Amsterdam, Antwerpię i pół kontynentu.
+          </p>
+        </div>
+        <div class="stos stos-s">
+          <blockquote class="cytat">
+            „Nie rzucim ziemi, skąd nasz ród”
+            <cite class="cytat__zrodlo">Maria Konopnicka, „Rota”, 1908</cite>
+          </blockquote>
+          <p>
+            Dożynki, wieniec z kłosów, chleb i sól w progu, Nobel dla Reymonta
+            za <em>Chłopów</em> w 1924 roku. Ziarno jest w polskiej kulturze
+            miarą tego, czy rok się udał.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="plansza plansza--pas" data-tytul="Trakt wiślany">
+    <div class="plansza__wnetrze">
+      <p class="nadtytul">Trakt wiślany</p>
+      <h2 class="tytul-l">Pierwsza polska giełda zbożowa</h2>
+      <div class="para">
+        <div class="stos stos-s">
+          <p>
+            Ziarno zsypywano do szkut i galarów — płaskodennych łodzi, które
+            flisacy spławiali Wisłą do Gdańska. Na Wyspie Spichrzów stały setki
+            magazynów: skład, giełda i bank w jednym.
+          </p>
+          <p>
+            Cena rodziła się w rozmowie trzech stron. Rolnik znał swoją partię,
+            kupiec znał rynek, flis znał trasę i porę wody.
+          </p>
+        </div>
+        <ul class="lista-mocna">
+          <li>Rolnik — ten, kto zasiał</li>
+          <li>Kupiec — ten, kto kupuje</li>
+          <li>Flis — ten, kto wiezie</li>
+        </ul>
+      </div>
+      <p class="lead" style="max-width: none;">
+        <strong class="wyroz">Te same trzy strony handlują dzisiaj.</strong>
+        Zniknął tylko stół, przy którym się spotykały.
+      </p>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="plansza" data-tytul="Skala rynku">
+    <div class="plansza__wnetrze">
+      <p class="nadtytul">Rynek dziś</p>
+      <h2 class="tytul-l">Zboże nadal trzyma polską wieś</h2>
+      <div class="liczby">
+        <div class="liczba">
+          <span class="liczba__wartosc">37,1 mln t</span>
+          <span class="liczba__opis">zbiory zbóż w Polsce w 2025 r. (GUS)</span>
+        </div>
+        <div class="liczba">
+          <span class="liczba__wartosc">~7 mln ha</span>
+          <span class="liczba__opis">powierzchnia zasiewów zbóż w kraju</span>
+        </div>
+        <div class="liczba">
+          <span class="liczba__wartosc">1. w UE</span>
+          <span class="liczba__opis">miejsce Polski w produkcji pszenżyta</span>
+        </div>
+        <div class="liczba">
+          <span class="liczba__wartosc">czołowe</span>
+          <span class="liczba__opis">miejsce w unijnej produkcji żyta</span>
+        </div>
+      </div>
+      <p class="lead" style="max-width: none;">
+        Rynek jest ogromny i rozdrobniony. Zmieniło się wszystko poza jednym:
+        sposobem, w jaki rolnik dowiaduje się, ile dostanie za partię.
+      </p>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="plansza plansza--pas" data-tytul="Problem">
+    <div class="plansza__wnetrze">
+      <p class="nadtytul">Problem</p>
+      <h2 class="tytul-l">Trzy strony, trzy osobne telefony</h2>
+      <div class="siatka siatka--3">
+        <div class="kolumna">
+          <h3 class="tytul-s">Cena znika w łańcuchu</h3>
+          <p>Rolnik często poznaje tylko jedną ofertę — tę, którą ktoś mu przywiózł. Notowania są publiczne, cena w skupie już nie.</p>
+        </div>
+        <div class="kolumna">
+          <h3 class="tytul-s">Jakości nie widać</h3>
+          <p>Badania, certyfikaty ISCC i GMP+ leżą w segregatorze, a nie tam, gdzie kupujący podejmuje decyzję.</p>
+        </div>
+        <div class="kolumna">
+          <h3 class="tytul-s">Transport osobno</h3>
+          <p>Po sprzedaży zaczyna się dzwonienie po przewoźnikach. Puste kursy zjadają marżę po obu stronach.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 -->
+  <section class="plansza" data-tytul="Rozwiązanie">
+    <div class="plansza__wnetrze">
+      <p class="nadtytul nadtytul--zyto">Rozwiązanie</p>
+      <h2 class="tytul-l">Partia, transakcja i transport jako jedna sprawa</h2>
+      <div class="para">
+        <div class="stos stos-s">
+          <p class="lead" style="max-width: none;">
+            Rolnik wystawia partię z parametrami i dokumentami. Kupujący widzi
+            ją obok innych i rezerwuje. Gdy rolnik potwierdzi sprzedaż,
+            platforma sama zakłada zlecenie transportowe i wystawia je na
+            giełdę frachtową.
+          </p>
+          <p>
+            <strong>Czym to nie jest:</strong> platforma nie jest bankiem.
+            Zapłata za zboże i fracht idzie kanałem stron. Platforma kojarzy
+            strony, pilnuje kolejności i zapisuje, co uzgodniono.
+          </p>
+        </div>
+        <ul class="lista-mocna">
+          <li>Obie strony zatwierdzają każdy krok</li>
+          <li>Warunki zamrażane w chwili zakupu</li>
+          <li>Ocena tylko z odbytej transakcji</li>
+          <li>Rola to uprawnienie, nie tożsamość</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section class="plansza plansza--pas" data-tytul="Przebieg transakcji">
+    <div class="plansza__wnetrze">
+      <p class="nadtytul">Przebieg</p>
+      <h2 class="tytul-l">Sześć kroków, których nie da się ominąć</h2>
+      <div class="przeplyw">
+        <div class="przeplyw__etap">
+          <span class="przeplyw__nr">01</span>
+          <span class="przeplyw__kto kto--rolnik">Rolnik</span>
+          <span class="przeplyw__co">Wystawia partię</span>
+          <span class="przeplyw__stan">→ ACTIVE</span>
+        </div>
+        <div class="przeplyw__etap">
+          <span class="przeplyw__nr">02</span>
+          <span class="przeplyw__kto kto--kupujacy">Kupujący</span>
+          <span class="przeplyw__co">Rezerwuje</span>
+          <span class="przeplyw__stan">→ RESERVED</span>
+        </div>
+        <div class="przeplyw__etap">
+          <span class="przeplyw__nr">03</span>
+          <span class="przeplyw__kto kto--rolnik">Rolnik</span>
+          <span class="przeplyw__co">Potwierdza sprzedaż</span>
+          <span class="przeplyw__stan">→ SOLD + kurs</span>
+        </div>
+        <div class="przeplyw__etap">
+          <span class="przeplyw__nr">04</span>
+          <span class="przeplyw__kto kto--przewoznik">Przewoźnik</span>
+          <span class="przeplyw__co">Zgłasza się</span>
+          <span class="przeplyw__stan">→ ASSIGNED</span>
+        </div>
+        <div class="przeplyw__etap">
+          <span class="przeplyw__nr">05</span>
+          <span class="przeplyw__kto kto--kupujacy">Kupujący</span>
+          <span class="przeplyw__co">Akceptuje przewoźnika</span>
+          <span class="przeplyw__stan">→ IN_TRANSIT</span>
+        </div>
+        <div class="przeplyw__etap">
+          <span class="przeplyw__nr">06</span>
+          <span class="przeplyw__kto">Wszyscy</span>
+          <span class="przeplyw__co">Wystawiają oceny</span>
+          <span class="przeplyw__stan">reputacja</span>
+        </div>
+      </div>
+      <p class="lead" style="max-width: none;">
+        Rezerwacja wygasa po 72 godzinach i partia wraca na giełdę, więc
+        milczenie jednej strony nie blokuje towaru w nieskończoność.
+      </p>
+    </div>
+  </section>
+
+  <!-- 08 -->
+  <section class="plansza" data-tytul="Trzy role">
+    <div class="plansza__wnetrze">
+      <p class="nadtytul">Dla kogo</p>
+      <h2 class="tytul-l">Trzy strony, jedno konto</h2>
+      <div class="siatka siatka--3">
+        <div class="kolumna kolumna--rola kolumna--rolnik">
+          <p class="kolumna__roli">Rolnik</p>
+          <ul>
+            <li>Wystawienie partii za darmo</li>
+            <li>Zdjęcia i dokumenty przy ofercie</li>
+            <li>Rezerwacje do potwierdzenia</li>
+            <li>Płatne wyróżnienie oferty</li>
+          </ul>
+        </div>
+        <div class="kolumna kolumna--rola kolumna--kupujacy">
+          <p class="kolumna__roli">Kupujący</p>
+          <ul>
+            <li>Giełda z filtrami i sortowaniem</li>
+            <li>Certyfikaty widoczne przy partii</li>
+            <li>Wybór przewoźnika ze zgłoszeń</li>
+            <li>Plan darmowy albo PRO</li>
+          </ul>
+        </div>
+        <div class="kolumna kolumna--rola kolumna--przewoznik">
+          <p class="kolumna__roli">Przewoźnik</p>
+          <ul>
+            <li>Giełda frachtowa z realnych transakcji</li>
+            <li>Dystans i zarobek po prowizji</li>
+            <li>Licencja, OCP i GMP+ przy koncie</li>
+            <li>Zgłoszenie bez opłaty z góry</li>
+          </ul>
+        </div>
+      </div>
+      <p class="podpowiedz">
+        Gospodarstwo, które sprzedaje, wozi i dokupuje, ma wszystkie trzy uprawnienia na jednym koncie.
+      </p>
+    </div>
+  </section>
+
+  <!-- 09 -->
+  <section class="plansza plansza--pas" data-tytul="Zaufanie">
+    <div class="plansza__wnetrze">
+      <p class="nadtytul">Zaufanie</p>
+      <h2 class="tytul-l">Ocena, na którą trzeba zapracować</h2>
+      <div class="para">
+        <ul class="lista-mocna">
+          <li>Opinia istnieje wyłącznie jako produkt uboczny transakcji</li>
+          <li>Strony ustalane z samego zapisu transakcji, nie z formularza</li>
+          <li>Jedna opinia na kontrahenta, na transakcję</li>
+          <li>Dokument po terminie ważności przestaje się liczyć</li>
+        </ul>
+        <div class="stos stos-s">
+          <p>
+            Na giełdzie zbożowej reputacja jest walutą, bo towar jedzie zanim
+            ktokolwiek go zobaczy. Dlatego oceny nie da się kupić ani wystawić
+            komuś, z kim się nie handlowało — pilnuje tego baza danych,
+            nie tylko interfejs.
+          </p>
+          <p>
+            Odznaka „z certyfikatem” na giełdzie czyta wgrane dokumenty, więc
+            nie obiecuje więcej, niż rolnik faktycznie pokazał.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="plansza" data-tytul="Model przychodowy">
+    <div class="plansza__wnetrze">
+      <p class="nadtytul">Model przychodowy</p>
+      <h2 class="tytul-l">Zarabiamy na dostępie, nie na ziarnie</h2>
+      <div class="tabela-otoczka">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Strumień</th>
+              <th scope="col">Kto płaci</th>
+              <th scope="col">Kiedy</th>
+              <th scope="col">Netto</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Wyróżnienie oferty</td>
+              <td>Rolnik</td>
+              <td>Przy wystawieniu</td>
+              <td class="liczbowo">15 zł</td>
+            </tr>
+            <tr>
+              <td>Prowizja transportowa</td>
+              <td>Przewoźnik</td>
+              <td>Po akceptacji kursu</td>
+              <td class="liczbowo">10 zł</td>
+            </tr>
+            <tr>
+              <td>Abonament PRO</td>
+              <td>Kupujący</td>
+              <td>Miesięcznie</td>
+              <td class="liczbowo">199 zł</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="lead" style="max-width: none;">
+        Żadnego procentu od wartości partii. Przewoźnik płaci dopiero wtedy,
+        gdy druga strona go zaakceptuje — nigdy za sam kontakt.
+      </p>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section class="plansza plansza--pas" data-tytul="Stan prac">
+    <div class="plansza__wnetrze">
+      <p class="nadtytul">Uczciwie</p>
+      <h2 class="tytul-l">Gdzie dziś jest projekt</h2>
+      <div class="para">
+        <div class="kolumna">
+          <p class="nadtytul nadtytul--zyto">Działa</p>
+          <ul>
+            <li>Pełna ścieżka od partii do kursu w trasie</li>
+            <li>Dokumenty, certyfikaty i zdjęcia</li>
+            <li>Oceny po wszystkich stronach transakcji</li>
+            <li>Wygasanie i wycofanie rezerwacji</li>
+            <li>Stawka frachtu liczona z dystansu</li>
+          </ul>
+        </div>
+        <div class="kolumna">
+          <p class="nadtytul">Następne kroki</p>
+          <ul>
+            <li>Parametry jakościowe na giełdzie</li>
+            <li>Strona oferty pod własnym adresem</li>
+            <li>Wyszukiwarka i stronicowanie</li>
+            <li>Powiadomienia</li>
+            <li>Logowanie przez dostawcę tożsamości</li>
+          </ul>
+        </div>
+      </div>
+      <p class="podpowiedz">
+        Prototyp MVP. Wersja demonstracyjna działa bez logowania, na danych przykładowych.
+        Notowania i płatności są symulowane.
+      </p>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section class="plansza plansza--tytul" data-tytul="Zakończenie">
+    <div class="plansza__wnetrze">
+      <p class="nadtytul">Podsumowanie</p>
+      <h2 class="tytul-xl">Stół wraca na miejsce.</h2>
+      <p class="lead">
+        Rolnik, kupujący i przewoźnik znów widzą się nawzajem — z partią,
+        dokumentami, ceną i kursem w jednym miejscu.
+      </p>
+      <div class="rzad-akcji">
+        <a class="btn btn--glowny" href="index.html">Strona projektu</a>
+        <a class="btn btn--obrys" href="marka.html" style="color:#f3f2ed; border-color:#4a4738;">Paleta i marka</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<nav class="pilot" aria-label="Sterowanie prezentacją">
+  <div class="pilot__rzad">
+    <button class="pilot__btn" id="wstecz" type="button" aria-label="Poprzednia plansza">&larr;</button>
+    <button class="pilot__btn" id="dalej" type="button" aria-label="Następna plansza">&rarr;</button>
+    <span class="pilot__tytul" id="tytul-planszy">Tytuł</span>
+    <span class="pilot__licznik"><span id="nr-planszy">1</span> / <span id="ile-plansz">12</span></span>
+  </div>
+</nav>
+
+<script>
+(function () {
+  var plansze = Array.prototype.slice.call(document.querySelectorAll(".plansza"));
+  if (!plansze.length) return;
+
+  var wstecz = document.getElementById("wstecz");
+  var dalej = document.getElementById("dalej");
+  var nrEl = document.getElementById("nr-planszy");
+  var ileEl = document.getElementById("ile-plansz");
+  var tytulEl = document.getElementById("tytul-planszy");
+  var postep = document.getElementById("postep");
+  var biezaca = 0;
+
+  ileEl.textContent = String(plansze.length);
+
+  function pokaz(i) {
+    biezaca = Math.max(0, Math.min(plansze.length - 1, i));
+    plansze.forEach(function (p, idx) {
+      p.classList.toggle("plansza--aktywna", idx === biezaca);
+    });
+    nrEl.textContent = String(biezaca + 1);
+    tytulEl.textContent = plansze[biezaca].getAttribute("data-tytul") || "";
+    postep.style.width = ((biezaca + 1) / plansze.length * 100) + "%";
+    wstecz.disabled = biezaca === 0;
+    dalej.disabled = biezaca === plansze.length - 1;
+    plansze[biezaca].scrollTop = 0;
+    // Adres pozwala wrócić do tej samej planszy po odświeżeniu.
+    if (history.replaceState) history.replaceState(null, "", "#p" + (biezaca + 1));
+  }
+
+  wstecz.addEventListener("click", function () { pokaz(biezaca - 1); });
+  dalej.addEventListener("click", function () { pokaz(biezaca + 1); });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    switch (e.key) {
+      case "ArrowRight": case "PageDown": case " ": pokaz(biezaca + 1); e.preventDefault(); break;
+      case "ArrowLeft": case "PageUp": pokaz(biezaca - 1); e.preventDefault(); break;
+      case "Home": pokaz(0); e.preventDefault(); break;
+      case "End": pokaz(plansze.length - 1); e.preventDefault(); break;
+    }
+  });
+
+  // Przesunięcie palcem na tablecie.
+  var startX = null;
+  document.addEventListener("touchstart", function (e) {
+    startX = e.changedTouches[0].clientX;
+  }, { passive: true });
+  document.addEventListener("touchend", function (e) {
+    if (startX === null) return;
+    var dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 60) pokaz(biezaca + (dx < 0 ? 1 : -1));
+    startX = null;
+  }, { passive: true });
+
+  function zAdresu() {
+    var n = parseInt((location.hash || "").replace("#p", ""), 10);
+    return isNaN(n) ? 0 : n - 1;
+  }
+
+  // Zmiana samego adresu nie przeładowuje strony, więc trzeba jej posłuchać.
+  window.addEventListener("hashchange", function () {
+    if (zAdresu() !== biezaca) pokaz(zAdresu());
+  });
+
+  pokaz(zAdresu());
+})();
+</script>
+
+</body>
+</html>
