@@ -76,6 +76,14 @@ export function FarmerOffers({ rows, reviewedPurchases }: Props) {
                       zbiór {row.harvestYear}
                     </p>
                   </div>
+                </div>
+
+                {/* Status siedzi w osobnej linii, a nie obok tytułu. Plakietka
+                    ma stałą wysokość i nie zawija tekstu, więc najdłuższa
+                    etykieta ("Zarezerwowana — czeka na Ciebie") nie zmieściłaby
+                    się obok miniatury i rozpychała całą stronę w poziomie na
+                    telefonie. */}
+                <div className="mt-2">
                   <StatusBadge status={row.status} label={row.statusLabel} />
                 </div>
 

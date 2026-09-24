@@ -683,3 +683,74 @@ thead th {
 tbody tr:last-child td { border-bottom: none; }
 
 td.liczbowo { font-family: var(--font-dane); font-variant-numeric: tabular-nums; }
+
+/* =========================================================================
+   Galeria zrzutow ekranu
+   ========================================================================= */
+
+.okno {
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--ground-2);
+  box-shadow: 0 1px 2px rgb(34 24 17 / 0.05), 0 12px 32px -12px rgb(34 24 17 / 0.18);
+}
+
+/* Pasek okna przegladarki — trzy kropki i adres, zeby bylo jasne, ze to zrzut
+   z dzialajacej aplikacji, a nie rysunek. */
+.okno__pasek {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--ground-3);
+}
+
+.okno__kropki { display: flex; gap: 0.3rem; }
+
+.okno__kropka {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--rule-strong);
+}
+
+.okno__adres {
+  font-family: var(--font-dane);
+  font-size: var(--t--1);
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.okno img { display: block; width: 100%; height: auto; }
+
+/* Telefony stoja w rzedzie i zwezaja sie razem z ekranem. */
+.telefony {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: clamp(1rem, 0.5rem + 2vw, 2rem);
+  align-items: start;
+}
+
+.telefon { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.telefon__ekran {
+  border: 1px solid var(--rule);
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--ground-2);
+  box-shadow: 0 1px 2px rgb(34 24 17 / 0.05), 0 10px 26px -12px rgb(34 24 17 / 0.22);
+}
+
+.telefon__ekran img { display: block; width: 100%; height: auto; }
+
+.podpis {
+  font-size: var(--t-0);
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+.podpis strong { color: var(--ink); font-weight: 600; }
